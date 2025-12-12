@@ -45,17 +45,51 @@ cp .env.example .env
 docker-compose up -d
 ```
 
-### 3. Access the API
+### 3. Access Services
 
-- **API Docs**: http://localhost:8000/docs
+- **FastAPI Docs**: http://localhost:8000/docs
 - **WebSocket**: ws://localhost:8000/ws/signals
 - **Health Check**: http://localhost:8000/health
+- **Dashboard**: http://localhost:3000 (After running frontend)
+
+### 4. Run Frontend (Optional)
+
+```bash
+cd frontend
+
+# Using Python
+python -m http.server 3000
+
+# Or using Node.js
+npx http-server -p 3000
+
+# Then open http://localhost:3000 in your browser
+```
+
+## 📊 Dashboard UI/UX
+
+Professional enterprise-grade dashboard with:
+
+- ✨ Modern glassmorphism design with cyan/dark theme
+- 📱 Fully responsive (mobile, tablet, desktop, ultra-wide)
+- ♿ WCAG 2.1 AA accessibility compliance
+- 🎨 Complete design system with 60+ components
+- ⚡ Real-time chart analysis and visualization
+- 🌙 Light/Dark mode theme toggle
+- 🔄 Drag-and-drop chart upload
+- 📊 Trade setup ladder with TP/SL visualization
+- 📈 Technical indicators breakdown
+- 🎯 Signal quality meter and badges
+- 💾 Local storage persistence
+- 🌐 WebSocket real-time updates
+
+[See Frontend Documentation](frontend/README.md) for detailed UI/UX specs.
 
 ## 📁 Project Structure
 
 ```
 TradeAIAgent/
-├── app/
+├── app/                           # FastAPI Backend
 │   ├── main.py                    # FastAPI application
 │   ├── config.py                  # Configuration management
 │   ├── core/
@@ -69,6 +103,20 @@ TradeAIAgent/
 │   │   └── schemas.py             # Pydantic schemas
 │   └── utils/
 │       └── logger.py              # Logging configuration
+├── frontend/                      # Professional Web Dashboard
+│   ├── index.html                 # Main dashboard page
+│   ├── css/
+│   │   ├── design-system.css      # Color palette, typography, components
+│   │   ├── dashboard.css          # Page-specific styles
+│   │   └── responsive.css         # Mobile/tablet/desktop breakpoints
+│   ├── js/
+│   │   ├── utils.js               # Helper functions
+│   │   ├── api.js                 # API client & WebSocket
+│   │   └── dashboard.js           # Main application logic
+│   ├── assets/                    # Images and fonts
+│   ├── components/                # Reusable component templates
+│   ├── pages/                     # Additional pages
+│   └── README.md                  # Frontend documentation
 ├── tests/
 │   └── test_trading_agent.py      # Unit tests
 ├── examples/
@@ -80,10 +128,31 @@ TradeAIAgent/
 ├── .env.example                    # Environment template
 ├── SETUP.md                        # Detailed setup guide
 ├── API.md                          # API documentation
+├── LICENSE                         # MIT License
 └── README.md                       # This file
 ```
 
-## 🔧 API Endpoints
+## �️ Technology Stack
+
+### Backend
+- **Framework**: FastAPI 0.104.1 with Uvicorn
+- **Technical Analysis**: TA-Lib 0.4.28, pandas-ta
+- **Image Processing**: OpenCV 4.8.1, PIL
+- **Database**: PostgreSQL 15, TimescaleDB (optional)
+- **Cache**: Redis 7
+- **ORM**: SQLAlchemy
+- **Language**: Python 3.11+
+
+### Frontend
+- **HTML5**: Semantic markup with accessibility
+- **CSS3**: Advanced features (Grid, Flexbox, CSS Variables)
+- **JavaScript**: Vanilla JS (no frameworks required)
+- **Design System**: Complete component library
+- **API Client**: Fetch API with error handling
+- **WebSocket**: Real-time signal streaming
+- **Responsive**: Mobile-first design
+
+## �🔧 API Endpoints
 
 ### POST /analyze
 
