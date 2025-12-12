@@ -72,13 +72,11 @@ class SignalGenerator:
         Returns:
             TradingSignal with complete information
         """
-        # Initialize counters
         bullish_signals = 0
         bearish_signals = 0
         confluences = []
         warnings = []
 
-        # 1. CHECK TREND (Moving Averages)
         ma_data = technical_data.get("moving_averages", {})
         trend = ma_data.get("trend", "SIDEWAYS")
         ma_signal = ma_data.get("signal", "NEUTRAL")
@@ -92,7 +90,6 @@ class SignalGenerator:
         else:
             warnings.append("Market in sideways consolidation")
 
-        # Check for golden/death cross
         if ma_data.get("crossover"):
             if "Golden" in ma_data["crossover"]:
                 bullish_signals += 1
@@ -101,7 +98,6 @@ class SignalGenerator:
                 bearish_signals += 1
                 confluences.append(ma_data["crossover"])
 
-        # 2. CHECK MOMENTUM (RSI)
         rsi_data = technical_data.get("rsi", {})
         rsi_value = rsi_data.get("value", 50)
         rsi_signal = rsi_data.get("signal", "NEUTRAL")
@@ -115,7 +111,6 @@ class SignalGenerator:
         elif 40 <= rsi_value <= 60:
             confluences.append(f"RSI neutral ({rsi_value:.1f})")
 
-        # 3. CHECK MACD
         macd_data = technical_data.get("macd", {})
         macd_signal = macd_data.get("signal_type", "NEUTRAL")
 
@@ -126,7 +121,6 @@ class SignalGenerator:
             bearish_signals += 1
             confluences.append(f"MACD: {macd_data.get('interpretation', 'Bearish')}")
 
-        # 4. CHECK BOLLINGER BANDS
         bb_data = technical_data.get("bollinger_bands", {})
         bb_signal = bb_data.get("signal", "NEUTRAL")
 
@@ -137,11 +131,9 @@ class SignalGenerator:
             bearish_signals += 1
             confluences.append("Price at upper Bollinger Band")
 
-        # Check for squeeze (potential breakout)
         if "squeeze" in bb_data.get("interpretation", "").lower():
             warnings.append("Volatility squeeze - await breakout direction")
 
-        # 5. CHECK ADX (Trend Strength)
         adx_data = technical_data.get("adx", {})
         adx_value = adx_data.get("adx", 0)
         adx_strength = adx_data.get("strength", "WEAK")
@@ -157,7 +149,6 @@ class SignalGenerator:
         elif adx_strength == "WEAK":
             warnings.append(f"Weak trend strength (ADX {adx_value:.1f})")
 
-        # 6. CHECK STOCHASTIC
         stoch_data = technical_data.get("stochastic", {})
         stoch_signal = stoch_data.get("signal", "NEUTRAL")
 
@@ -168,7 +159,6 @@ class SignalGenerator:
             bearish_signals += 1
             confluences.append(f"Stochastic: {stoch_data.get('interpretation', 'Bearish')}")
 
-        # 7. CHECK VOLUME
         volume_data = technical_data.get("volume", {})
         volume_signal = volume_data.get("signal", "NEUTRAL")
 
@@ -177,7 +167,6 @@ class SignalGenerator:
         elif volume_signal == "CAUTION":
             warnings.append("Low volume - weak confirmation")
 
-        # 8. CHECK CHART PATTERNS
         patterns = chart_data.get("patterns", [])
         for pattern in patterns:
             pattern_signal = pattern.get("signal", "NEUTRAL")
@@ -190,7 +179,6 @@ class SignalGenerator:
                 bearish_signals += 1
                 confluences.append(f"Pattern: {pattern_name}")
 
-        # 9. CHECK SUPPORT/RESISTANCE
         nearest_support = chart_data.get("nearest_support")
         nearest_resistance = chart_data.get("nearest_resistance")
 
@@ -206,24 +194,20 @@ class SignalGenerator:
                 bearish_signals += 1
                 confluences.append(f"Price at resistance level ({nearest_resistance['price']:.2f})")
 
-        # 10. CHECK FIBONACCI LEVELS
         fib_data = technical_data.get("fibonacci", {})
         nearest_fib = fib_data.get("nearest_level")
         
         if nearest_fib in ["38.2", "50.0", "61.8"]:  # Key retracement levels
             confluences.append(f"Price near Fibonacci {nearest_fib}%")
 
-        # 11. CHECK VOLATILITY (ATR)
         atr_data = technical_data.get("atr", {})
         volatility = atr_data.get("volatility", "NORMAL")
         
         if volatility in ["HIGH", "EXTREME"]:
             warnings.append(f"{volatility} volatility - wider stops recommended")
 
-        # DETERMINE FINAL SIGNAL
         confluence_count = len(confluences)
         
-        # Calculate confidence score
         if bullish_signals > bearish_signals:
             signal_type = SignalType.BUY.value
             confidence = min(100, (bullish_signals / max(1, bearish_signals)) * 30 + confluence_count * 10)
@@ -234,7 +218,6 @@ class SignalGenerator:
             signal_type = SignalType.HOLD.value
             confidence = 40
 
-        # Calculate quality score
         quality_score = self._calculate_quality_score(
             confluence_count=confluence_count,
             trend_strength=adx_value,
@@ -242,7 +225,6 @@ class SignalGenerator:
             pattern_count=len(patterns)
         )
 
-        # Determine signal strength
         if quality_score >= 80:
             strength = SignalStrength.STRONG.value
         elif quality_score >= 60:
@@ -250,7 +232,6 @@ class SignalGenerator:
         else:
             strength = SignalStrength.WEAK.value
 
-        # Determine entry trigger
         if confluence_count >= 4 and quality_score >= 70:
             trigger = TriggerType.IMMEDIATE.value
         elif confluence_count >= 2:
@@ -258,7 +239,6 @@ class SignalGenerator:
         else:
             trigger = TriggerType.PULLBACK.value
 
-        # Create entry description
         entry_description = self._create_entry_description(
             signal_type, technical_data, chart_data, confluences[:3]
         )
@@ -297,10 +277,8 @@ class SignalGenerator:
         """
         score = 0
 
-        # Confluence weight (40 points max)
         score += min(confluence_count * 8, 40)
 
-        # Trend strength (30 points max)
         if trend_strength > 40:
             score += 30
         elif trend_strength > 25:
@@ -308,13 +286,11 @@ class SignalGenerator:
         elif trend_strength > 15:
             score += 10
 
-        # Volume confirmation (15 points max)
         if volume_signal == "CONFIRM":
             score += 15
         elif volume_signal == "NEUTRAL":
             score += 7
 
-        # Pattern recognition (15 points max)
         score += min(pattern_count * 5, 15)
 
         return min(score, 100)
@@ -349,7 +325,6 @@ class SignalGenerator:
         else:
             description_parts.append("No clear directional bias")
         
-        # Add top confluences
         if top_confluences:
             description_parts.append(f"Confluences: {', '.join(top_confluences[:2])}")
         
@@ -374,7 +349,6 @@ class SignalGenerator:
         """
         signals = [daily_signal.signal_type, h4_signal.signal_type, h1_signal.signal_type]
         
-        # Count signal types
         buy_count = signals.count("BUY")
         sell_count = signals.count("SELL")
         
@@ -391,7 +365,6 @@ class SignalGenerator:
             aligned = False
             recommendation = "Timeframes not aligned - wait for clarity"
         
-        # Calculate average confidence
         avg_confidence = (
             daily_signal.confidence + h4_signal.confidence + h1_signal.confidence
         ) / 3
@@ -419,17 +392,14 @@ class SignalGenerator:
         passed = True
         issues = []
         
-        # Check minimum confluence
         if signal.confluence_count < self.min_confluence_for_trade:
             passed = False
             issues.append(f"Insufficient confluences ({signal.confluence_count} < {self.min_confluence_for_trade})")
         
-        # Check minimum quality score
         if signal.quality_score < self.min_quality_score:
             passed = False
             issues.append(f"Quality score too low ({signal.quality_score} < {self.min_quality_score})")
         
-        # Check for critical warnings
         critical_warnings = [w for w in signal.warnings if "EXTREME" in w.upper() or "CAUTION" in w.upper()]
         if critical_warnings:
             issues.append(f"Critical warnings present: {', '.join(critical_warnings)}")

@@ -109,7 +109,6 @@ class PerformanceMetrics(Base):
     average_loss = Column(Float, default=0.0)
 
 
-# Database connection
 engine = create_engine(settings.database_url)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 

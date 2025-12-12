@@ -21,7 +21,6 @@ from app.models.schemas import (
 )
 
 
-# Initialize FastAPI app
 app = FastAPI(
     title=settings.app_name,
     version=settings.app_version,
@@ -30,7 +29,6 @@ app = FastAPI(
     redoc_url="/redoc"
 )
 
-# CORS middleware
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # Configure appropriately for production
@@ -39,14 +37,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Initialize Trading Agent
 trading_agent = TradingAgent(
     capital=settings.default_capital,
     max_risk_percent=settings.max_risk_percent,
     max_daily_loss_percent=settings.max_daily_loss_percent
 )
 
-# WebSocket connection manager
 class ConnectionManager:
     """Manage WebSocket connections for real-time updates"""
     
@@ -116,7 +112,6 @@ async def analyze_trading_signal(request: AnalysisRequest):
         HTTPException: If analysis fails
     """
     try:
-        # Validate input data
         if not request.ohlcv.close:
             raise HTTPException(status_code=400, detail="OHLCV data is required")
         
@@ -126,12 +121,10 @@ async def analyze_trading_signal(request: AnalysisRequest):
                 detail="Insufficient data. Minimum 50 candles required for accurate analysis"
             )
         
-        # Update trading agent capital if provided
         if request.capital:
             trading_agent.risk_manager.capital = request.capital
             trading_agent.capital = request.capital
         
-        # Perform analysis
         analysis = trading_agent.analyze(
             symbol=request.symbol,
             timeframe=request.timeframe,
@@ -143,7 +136,6 @@ async def analyze_trading_signal(request: AnalysisRequest):
             image_base64=request.image_base64
         )
         
-        # Broadcast to WebSocket clients
         await manager.broadcast({
             "type": "new_analysis",
             "symbol": request.symbol,
@@ -199,19 +191,15 @@ async def websocket_signals(websocket: WebSocket):
     """
     await manager.connect(websocket)
     try:
-        # Send welcome message
         await websocket.send_json({
             "type": "connection",
             "message": "Connected to AI Trading Agent signal stream",
             "timestamp": datetime.utcnow().isoformat()
         })
         
-        # Keep connection alive
         while True:
-            # Wait for messages from client
             data = await websocket.receive_text()
             
-            # Echo received data (can be extended for two-way communication)
             await websocket.send_json({
                 "type": "echo",
                 "message": f"Received: {data}",

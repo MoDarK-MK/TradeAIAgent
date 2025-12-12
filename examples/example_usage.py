@@ -9,7 +9,6 @@ from app.core.trading_agent import TradingAgent
 
 def generate_sample_data(length=100):
     """Generate sample OHLCV data for testing"""
-    # Create synthetic price data with trend
     base_price = 42000
     trend = np.linspace(0, 2000, length)
     noise = np.random.randn(length) * 200
@@ -36,18 +35,15 @@ def main():
     print("=" * 60)
     print()
     
-    # Initialize Trading Agent
     agent = TradingAgent(
         capital=10000,  # $10,000 capital
         max_risk_percent=2.0,  # Risk 2% per trade
         max_daily_loss_percent=5.0  # Stop trading if lose 5% in a day
     )
     
-    # Generate sample data
     print("📊 Generating sample BTC/USD data...")
     data = generate_sample_data(length=100)
     
-    # Perform analysis
     print("🔍 Analyzing market conditions...")
     print()
     
@@ -62,20 +58,17 @@ def main():
         image_base64=None  # No chart image in this example
     )
     
-    # Display results
     print("=" * 60)
     print("📈 ANALYSIS RESULTS")
     print("=" * 60)
     print()
     
-    # Metadata
     print(f"Symbol: {analysis['metadata']['symbol']}")
     print(f"Timeframe: {analysis['metadata']['timeframe']}")
     print(f"Current Price: ${analysis['metadata']['current_price']:,.2f}")
     print(f"Analysis Time: {analysis['metadata']['timestamp']}")
     print()
     
-    # Signal
     signal = analysis['signal']
     print("🎯 SIGNAL INFORMATION:")
     print(f"  Type: {signal['type']}")
@@ -85,7 +78,6 @@ def main():
     print(f"  Confluences: {signal['confluence_count']}")
     print()
     
-    # Entry
     entry = analysis['entry']
     print("📍 ENTRY INFORMATION:")
     print(f"  Price: ${entry['price']:,.2f}")
@@ -93,7 +85,6 @@ def main():
     print(f"  Description: {entry['description']}")
     print()
     
-    # Risk Management
     if analysis['stop_loss']:
         sl = analysis['stop_loss']
         tp = analysis['take_profit']
@@ -118,7 +109,6 @@ def main():
         print(f"  Status: {rr['status']}")
         print()
     
-    # Technical Details
     indicators = analysis['technical_details']['indicators']
     print("📉 TECHNICAL INDICATORS:")
     print(f"  RSI: {indicators['RSI']['value']:.1f} - {indicators['RSI']['interpretation']}")
@@ -132,7 +122,6 @@ def main():
         print(f"  Resistance: ${indicators['Resistance']:,.2f}")
     print()
     
-    # Patterns
     patterns = analysis['technical_details']['patterns']
     if patterns:
         print("🎨 CHART PATTERNS DETECTED:")
@@ -140,7 +129,6 @@ def main():
             print(f"  - {pattern['name']} ({pattern['type']}) - {pattern['signal']}")
         print()
     
-    # Execution Checklist
     checklist = analysis['execution_checklist']
     print("✅ EXECUTION CHECKLIST:")
     print(f"  {'✓' if checklist['price_action_confirmed'] else '✗'} Price action confirmed")
@@ -151,20 +139,17 @@ def main():
     print(f"  {'✓' if checklist['all_ready'] else '✗'} All systems ready")
     print()
     
-    # Recommendations
     print("💡 RECOMMENDATIONS:")
     for i, rec in enumerate(analysis['recommendations'], 1):
         print(f"  {i}. {rec}")
     print()
     
-    # Warnings
     if analysis['warnings']:
         print("⚠️  WARNINGS:")
         for warning in analysis['warnings']:
             print(f"  - {warning}")
         print()
     
-    # Final verdict
     print("=" * 60)
     quality = analysis['quality_validation']
     if quality['passed']:
@@ -180,7 +165,6 @@ def main():
     print("=" * 60)
     print()
     
-    # Educational disclaimer
     print("⚠️  DISCLAIMER:")
     print("This analysis is for educational and professional use only.")
     print("Trading involves substantial risk of loss. Past performance is")

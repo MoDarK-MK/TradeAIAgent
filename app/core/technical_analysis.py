@@ -84,7 +84,6 @@ class TechnicalAnalysis:
         current_hist = histogram[-1]
         prev_hist = histogram[-2] if len(histogram) > 1 else 0
 
-        # Detect crossover
         if current_hist > 0 and prev_hist <= 0:
             interpretation = "Bullish crossover"
             signal_type = "BUY"
@@ -127,7 +126,6 @@ class TechnicalAnalysis:
         current_middle = middle[-1]
         current_lower = lower[-1]
 
-        # Calculate position within bands
         band_width = current_upper - current_lower
         position = (current_price - current_lower) / band_width * 100
 
@@ -173,7 +171,6 @@ class TechnicalAnalysis:
         current_sma50 = sma50[-1]
         current_sma200 = sma200[-1]
 
-        # Determine trend
         if current_price > current_ema21 > current_sma50 > current_sma200:
             trend = "STRONG UPTREND"
             signal = "BUY"
@@ -190,7 +187,6 @@ class TechnicalAnalysis:
             trend = "SIDEWAYS"
             signal = "NEUTRAL"
 
-        # Detect crossovers
         crossover = None
         if len(ema21) > 1 and len(sma50) > 1:
             if ema21[-2] < sma50[-2] and current_ema21 > current_sma50:
@@ -221,10 +217,8 @@ class TechnicalAnalysis:
         current_atr = atr[-1]
         current_price = close[-1]
 
-        # Calculate ATR as percentage of price
         atr_percent = (current_atr / current_price) * 100
 
-        # Classify volatility
         if atr_percent < 1:
             volatility = "LOW"
             interpretation = "Low volatility - tight stops possible"
@@ -275,7 +269,6 @@ class TechnicalAnalysis:
 
         current_price = prices[-1]
         
-        # Find nearest level
         nearest_level = min(levels.items(), key=lambda x: abs(x[1] - current_price))
 
         return {
@@ -304,7 +297,6 @@ class TechnicalAnalysis:
         current_plus_di = plus_di[-1]
         current_minus_di = minus_di[-1]
 
-        # Classify trend strength
         if current_adx < 20:
             strength = "WEAK"
             interpretation = "Weak or no trend - avoid trend-following strategies"
@@ -318,7 +310,6 @@ class TechnicalAnalysis:
             strength = "VERY STRONG"
             interpretation = "Very strong trend - potential exhaustion soon"
 
-        # Direction
         if current_plus_di > current_minus_di:
             direction = "BULLISH"
         else:
@@ -359,7 +350,6 @@ class TechnicalAnalysis:
         prev_k = slowk[-2] if len(slowk) > 1 else current_k
         prev_d = slowd[-2] if len(slowd) > 1 else current_d
 
-        # Detect crossover
         if prev_k < prev_d and current_k > current_d and current_k < 20:
             interpretation = "Bullish crossover in oversold zone"
             signal = "BUY"

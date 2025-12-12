@@ -71,15 +71,12 @@ class ChartAnalyzer:
         Returns:
             OpenCV image array (numpy)
         """
-        # Remove header if present
         if "," in base64_string:
             base64_string = base64_string.split(",")[1]
 
-        # Decode
         image_bytes = base64.b64decode(base64_string)
         image = Image.open(io.BytesIO(image_bytes))
         
-        # Convert to OpenCV format
         opencv_image = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2BGR)
         
         return opencv_image
@@ -94,20 +91,16 @@ class ChartAnalyzer:
         Returns:
             List of detected candles with properties
         """
-        # Convert to grayscale
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         
-        # Edge detection
         edges = cv2.Canny(gray, 50, 150)
         
-        # Find contours (simplified detection)
         contours, _ = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         
         candles = []
         for contour in contours:
             x, y, w, h = cv2.boundingRect(contour)
             
-            # Filter by aspect ratio (candles are vertical)
             if h > w * 2 and h > 10:  # Basic candle shape detection
                 candles.append({
                     "x": x,
@@ -140,7 +133,6 @@ class ChartAnalyzer:
         
         patterns = []
 
-        # Hammer
         hammer = talib.CDLHAMMER(open_prices, high, low, close)
         if hammer[-1] != 0:
             patterns.append(ChartPattern(
@@ -151,7 +143,6 @@ class ChartAnalyzer:
                 signal="BUY" if hammer[-1] > 0 else "NEUTRAL"
             ))
 
-        # Engulfing
         engulfing = talib.CDLENGULFING(open_prices, high, low, close)
         if engulfing[-1] != 0:
             patterns.append(ChartPattern(
@@ -162,7 +153,6 @@ class ChartAnalyzer:
                 signal="BUY" if engulfing[-1] > 0 else "SELL"
             ))
 
-        # Morning Star / Evening Star
         morning_star = talib.CDLMORNINGSTAR(open_prices, high, low, close)
         if morning_star[-1] != 0:
             patterns.append(ChartPattern(
@@ -183,7 +173,6 @@ class ChartAnalyzer:
                 signal="SELL"
             ))
 
-        # Doji
         doji = talib.CDLDOJI(open_prices, high, low, close)
         if doji[-1] != 0:
             patterns.append(ChartPattern(
@@ -194,7 +183,6 @@ class ChartAnalyzer:
                 signal="NEUTRAL"
             ))
 
-        # Shooting Star
         shooting_star = talib.CDLSHOOTINGSTAR(open_prices, high, low, close)
         if shooting_star[-1] != 0:
             patterns.append(ChartPattern(
@@ -205,7 +193,6 @@ class ChartAnalyzer:
                 signal="SELL"
             ))
 
-        # Three White Soldiers / Three Black Crows
         three_white = talib.CDL3WHITESOLDIERS(open_prices, high, low, close)
         if three_white[-1] != 0:
             patterns.append(ChartPattern(
@@ -226,7 +213,6 @@ class ChartAnalyzer:
                 signal="SELL"
             ))
 
-        # Piercing Pattern
         piercing = talib.CDLPIERCING(open_prices, high, low, close)
         if piercing[-1] != 0:
             patterns.append(ChartPattern(
@@ -237,7 +223,6 @@ class ChartAnalyzer:
                 signal="BUY"
             ))
 
-        # Dark Cloud Cover
         dark_cloud = talib.CDLDARKCLOUDCOVER(open_prices, high, low, close)
         if dark_cloud[-1] != 0:
             patterns.append(ChartPattern(
@@ -269,19 +254,16 @@ class ChartAnalyzer:
         """
         levels = []
         
-        # Use recent data
         recent_high = high[-lookback:] if len(high) > lookback else high
         recent_low = low[-lookback:] if len(low) > lookback else low
         recent_close = close[-lookback:] if len(close) > lookback else close
         
-        # Find local maxima (resistance)
         for i in range(2, len(recent_high) - 2):
             if (recent_high[i] > recent_high[i-1] and 
                 recent_high[i] > recent_high[i-2] and
                 recent_high[i] > recent_high[i+1] and
                 recent_high[i] > recent_high[i+2]):
                 
-                # Check how many times price touched this level
                 touches = self._count_touches(recent_close, recent_high[i], tolerance=0.02)
                 
                 levels.append(SupportResistance(
@@ -292,7 +274,6 @@ class ChartAnalyzer:
                     recent=(i >= len(recent_high) - 10)
                 ))
         
-        # Find local minima (support)
         for i in range(2, len(recent_low) - 2):
             if (recent_low[i] < recent_low[i-1] and 
                 recent_low[i] < recent_low[i-2] and
@@ -309,7 +290,6 @@ class ChartAnalyzer:
                     recent=(i >= len(recent_low) - 10)
                 ))
         
-        # Sort by strength and remove duplicates
         levels = self._remove_close_levels(levels)
         levels.sort(key=lambda x: x.strength, reverse=True)
         
@@ -375,19 +355,15 @@ class ChartAnalyzer:
         Returns:
             Dict with trend channel information
         """
-        # Simple linear regression on closing prices
         x = np.arange(len(close))
         
-        # Calculate trend line
         z = np.polyfit(x, close, 1)
         p = np.poly1d(z)
         trend_line = p(x)
         
-        # Calculate slope
         slope = z[0]
         slope_percent = (slope / close[0]) * 100
         
-        # Classify trend
         if slope_percent > 0.5:
             trend_type = "UPTREND"
             signal = "BUY"
@@ -398,7 +374,6 @@ class ChartAnalyzer:
             trend_type = "SIDEWAYS"
             signal = "NEUTRAL"
         
-        # Calculate channel width (standard deviation from trend line)
         deviations = close - trend_line
         upper_channel = trend_line + np.std(deviations) * 2
         lower_channel = trend_line - np.std(deviations) * 2
@@ -432,16 +407,12 @@ class ChartAnalyzer:
         Returns:
             Comprehensive chart analysis
         """
-        # Pattern recognition
         patterns = self.identify_candlestick_patterns(open_prices, high, low, close)
         
-        # Support/Resistance
         sr_levels = self.detect_support_resistance(high, low, close)
         
-        # Trend channels
         trend_info = self.detect_trend_channels(high, low, close)
         
-        # Find current position relative to S/R levels
         current_price = close[-1]
         nearest_support = None
         nearest_resistance = None

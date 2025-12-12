@@ -1,13 +1,4 @@
-/* ═══════════════════════════════════════════════════════════════════ */
-/* UTILITY FUNCTIONS                                                    */
-/* ═══════════════════════════════════════════════════════════════════ */
 
-/**
- * Show a toast notification
- * @param {string} message - Notification message
- * @param {string} type - 'success', 'error', 'warning', or 'info'
- * @param {number} duration - Duration in ms (0 = no auto-dismiss)
- */
 function showToast(message, type = "info", duration = 4000) {
   const container = document.getElementById("toastContainer");
 
@@ -55,12 +46,6 @@ function showToast(message, type = "info", duration = 4000) {
   }
 }
 
-/**
- * Format currency values
- * @param {number} value - Value to format
- * @param {string} currency - Currency code (default: USD)
- * @returns {string} Formatted currency string
- */
 function formatCurrency(value, currency = "USD") {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -70,32 +55,14 @@ function formatCurrency(value, currency = "USD") {
   }).format(value);
 }
 
-/**
- * Format percentage
- * @param {number} value - Value to format
- * @param {number} decimals - Number of decimal places
- * @returns {string} Formatted percentage
- */
 function formatPercent(value, decimals = 1) {
   return value.toFixed(decimals) + "%";
 }
 
-/**
- * Format large numbers with commas
- * @param {number} value - Value to format
- * @param {number} decimals - Number of decimal places
- * @returns {string} Formatted number
- */
 function formatNumber(value, decimals = 0) {
   return value.toFixed(decimals).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
-/**
- * Debounce function - delays execution until after calls stop
- * @param {function} func - Function to debounce
- * @param {number} delay - Delay in ms
- * @returns {function} Debounced function
- */
 function debounce(func, delay = 300) {
   let timeoutId;
   return function debounced(...args) {
@@ -104,12 +71,6 @@ function debounce(func, delay = 300) {
   };
 }
 
-/**
- * Throttle function - limits execution frequency
- * @param {function} func - Function to throttle
- * @param {number} limit - Time limit in ms
- * @returns {function} Throttled function
- */
 function throttle(func, limit = 300) {
   let lastFunc;
   let lastRan;
@@ -129,21 +90,11 @@ function throttle(func, limit = 300) {
   };
 }
 
-/**
- * Validate email address
- * @param {string} email - Email to validate
- * @returns {boolean} Valid email
- */
 function validateEmail(email) {
   const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return regex.test(email);
 }
 
-/**
- * Validate form field
- * @param {HTMLElement} field - Form field element
- * @returns {boolean} Field is valid
- */
 function validateField(field) {
   const value = field.value.trim();
   const type = field.getAttribute("type");
@@ -169,11 +120,6 @@ function validateField(field) {
   return true;
 }
 
-/**
- * Show field error
- * @param {HTMLElement} field - Form field element
- * @param {string} message - Error message
- */
 function showFieldError(field, message) {
   field.classList.add("error");
 
@@ -188,10 +134,6 @@ function showFieldError(field, message) {
   errorEl.classList.add("show");
 }
 
-/**
- * Clear field error
- * @param {HTMLElement} field - Form field element
- */
 function clearFieldError(field) {
   field.classList.remove("error");
 
@@ -201,11 +143,6 @@ function clearFieldError(field) {
   }
 }
 
-/**
- * Copy text to clipboard
- * @param {string} text - Text to copy
- * @returns {Promise<boolean>} Copy success
- */
 async function copyToClipboard(text) {
   try {
     await navigator.clipboard.writeText(text);
@@ -217,12 +154,6 @@ async function copyToClipboard(text) {
   }
 }
 
-/**
- * Animate number counter
- * @param {HTMLElement} element - Element to animate
- * @param {number} target - Target number
- * @param {number} duration - Duration in ms
- */
 function animateCounter(element, target, duration = 1000) {
   const start = parseFloat(element.textContent) || 0;
   const increment = (target - start) / (duration / 16);
@@ -243,10 +174,6 @@ function animateCounter(element, target, duration = 1000) {
   }, 16);
 }
 
-/**
- * Get theme preference
- * @returns {string} 'light' or 'dark'
- */
 function getThemePreference() {
   const stored = localStorage.getItem("theme-preference");
   if (stored) return stored;
@@ -256,29 +183,17 @@ function getThemePreference() {
     : "light";
 }
 
-/**
- * Set theme
- * @param {string} theme - 'light' or 'dark'
- */
 function setTheme(theme) {
   document.documentElement.setAttribute("data-theme", theme);
   localStorage.setItem("theme-preference", theme);
 }
 
-/**
- * Toggle theme
- */
 function toggleTheme() {
   const current = getThemePreference();
   const next = current === "light" ? "dark" : "light";
   setTheme(next);
 }
 
-/**
- * Check if element is in viewport
- * @param {HTMLElement} element - Element to check
- * @returns {boolean} Is visible in viewport
- */
 function isInViewport(element) {
   const rect = element.getBoundingClientRect();
   return (
@@ -290,11 +205,6 @@ function isInViewport(element) {
   );
 }
 
-/**
- * Scroll to element smoothly
- * @param {HTMLElement|string} element - Element or selector
- * @param {number} offset - Offset from top
- */
 function scrollToElement(element, offset = 80) {
   if (typeof element === "string") {
     element = document.querySelector(element);
@@ -306,27 +216,14 @@ function scrollToElement(element, offset = 80) {
   }
 }
 
-/**
- * Generate unique ID
- * @returns {string} Unique ID
- */
 function generateId() {
   return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 }
 
-/**
- * Delay execution
- * @param {number} ms - Milliseconds to delay
- * @returns {Promise} Resolves after delay
- */
 function delay(ms = 1000) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-/**
- * Parse URL parameters
- * @returns {Object} URL parameters
- */
 function getUrlParams() {
   const params = {};
   const searchParams = new URLSearchParams(window.location.search);
@@ -338,11 +235,6 @@ function getUrlParams() {
   return params;
 }
 
-/**
- * Build query string from object
- * @param {Object} params - Parameters object
- * @returns {string} Query string
- */
 function buildQueryString(params) {
   const searchParams = new URLSearchParams();
 
@@ -355,21 +247,10 @@ function buildQueryString(params) {
   return searchParams.toString();
 }
 
-/**
- * Deep clone object
- * @param {Object} obj - Object to clone
- * @returns {Object} Cloned object
- */
 function deepClone(obj) {
   return JSON.parse(JSON.stringify(obj));
 }
 
-/**
- * Merge objects
- * @param {Object} target - Target object
- * @param {Object} source - Source object
- * @returns {Object} Merged object
- */
 function mergeObjects(target, source) {
   const result = { ...target };
 
@@ -386,13 +267,6 @@ function mergeObjects(target, source) {
   return result;
 }
 
-/**
- * Event delegation helper
- * @param {HTMLElement} parent - Parent element
- * @param {string} selector - Child selector
- * @param {string} eventType - Event type
- * @param {function} handler - Event handler
- */
 function delegateEvent(parent, selector, eventType, handler) {
   parent.addEventListener(eventType, (event) => {
     const element = event.target.closest(selector);
@@ -402,13 +276,6 @@ function delegateEvent(parent, selector, eventType, handler) {
   });
 }
 
-/**
- * Create element with attributes
- * @param {string} tag - HTML tag
- * @param {Object} attrs - Attributes object
- * @param {string|HTMLElement} content - Element content
- * @returns {HTMLElement} Created element
- */
 function createElement(tag, attrs = {}, content = "") {
   const element = document.createElement(tag);
 
@@ -433,19 +300,4 @@ function createElement(tag, attrs = {}, content = "") {
   return element;
 }
 
-/* ═══════════════════════════════════════════════════════════════════ */
-/* EXPORT FOR MODULE USAGE (if needed)                                 */
-/* ═══════════════════════════════════════════════════════════════════ */
 
-// if (typeof module !== 'undefined' && module.exports) {
-//   module.exports = {
-//     showToast,
-//     formatCurrency,
-//     formatPercent,
-//     formatNumber,
-//     debounce,
-//     throttle,
-//     validateEmail,
-//     // ... other exports
-//   };
-// }

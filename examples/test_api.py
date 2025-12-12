@@ -234,7 +234,6 @@ def run_all_tests():
             print(f"\n❌ Test '{name}' failed with exception: {e}")
             results.append((name, False))
     
-    # Print summary
     print("\n" + "=" * 60)
     print("  TEST RESULTS SUMMARY")
     print("=" * 60)

@@ -135,6 +135,7 @@ TradeAIAgent/
 ## �️ Technology Stack
 
 ### Backend
+
 - **Framework**: FastAPI 0.104.1 with Uvicorn
 - **Technical Analysis**: TA-Lib 0.4.28, pandas-ta
 - **Image Processing**: OpenCV 4.8.1, PIL
@@ -144,6 +145,7 @@ TradeAIAgent/
 - **Language**: Python 3.11+
 
 ### Frontend
+
 - **HTML5**: Semantic markup with accessibility
 - **CSS3**: Advanced features (Grid, Flexbox, CSS Variables)
 - **JavaScript**: Vanilla JS (no frameworks required)

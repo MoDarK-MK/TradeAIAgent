@@ -62,7 +62,6 @@ class TradingAgent:
         """
         current_price = close[-1]
         
-        # 1. TECHNICAL ANALYSIS
         technical_data = self.technical_analyzer.full_analysis(
             open_prices=open_prices,
             high=high,
@@ -71,7 +70,6 @@ class TradingAgent:
             volume=volume
         )
 
-        # 2. CHART ANALYSIS
         chart_data = self.chart_analyzer.full_chart_analysis(
             image_base64=image_base64,
             open_prices=open_prices,
@@ -80,23 +78,18 @@ class TradingAgent:
             close=close
         )
 
-        # 3. SIGNAL GENERATION
         signal = self.signal_generator.generate_signal(
             technical_data=technical_data,
             chart_data=chart_data,
             current_price=current_price
         )
 
-        # 4. VALIDATE SIGNAL QUALITY
         quality_validation = self.signal_generator.validate_signal_quality(signal)
 
-        # 5. RISK MANAGEMENT (only if signal is tradeable)
         risk_data = None
         if quality_validation["passed"]:
-            # Get ATR for risk calculations
             atr_value = technical_data["atr"]["atr"]
             
-            # Get support/resistance levels
             support_level = None
             resistance_level = None
             if chart_data.get("nearest_support"):
@@ -104,7 +97,6 @@ class TradingAgent:
             if chart_data.get("nearest_resistance"):
                 resistance_level = chart_data["nearest_resistance"]["price"]
 
-            # Full risk analysis
             risk_data = self.risk_manager.full_risk_analysis(
                 entry_price=current_price,
                 signal_type=signal.signal_type,
@@ -113,7 +105,6 @@ class TradingAgent:
                 resistance_level=resistance_level
             )
 
-        # 6. GENERATE RECOMMENDATIONS
         recommendations = self._generate_recommendations(
             signal=signal,
             technical_data=technical_data,
@@ -122,14 +113,12 @@ class TradingAgent:
             quality_validation=quality_validation
         )
 
-        # 7. CREATE EXECUTION CHECKLIST
         execution_checklist = self._create_execution_checklist(
             signal=signal,
             technical_data=technical_data,
             risk_data=risk_data
         )
 
-        # 8. COMPILE FINAL ANALYSIS
         analysis = {
             "metadata": {
                 "symbol": symbol,
@@ -205,7 +194,6 @@ class TradingAgent:
             "risk_checks": risk_data["risk_checks"] if risk_data else None
         }
 
-        # Store in history
         self.analysis_history.append({
             "timestamp": analysis["metadata"]["timestamp"],
             "symbol": symbol,
@@ -231,7 +219,6 @@ class TradingAgent:
         """
         recommendations = []
 
-        # Entry recommendation
         if signal.entry_trigger == "IMMEDIATE":
             recommendations.append(
                 f"✓ Entry: {signal.signal_type} at current price {signal.entry_price:.2f}"
@@ -245,7 +232,6 @@ class TradingAgent:
                 f"⚠ Entry: Wait for pullback before entering {signal.signal_type}"
             )
 
-        # Risk/Reward recommendation
         if risk_data:
             rr_ratio = risk_data["risk_reward"]["ratio"]
             rr_status = risk_data["risk_reward"]["status"]
@@ -253,14 +239,12 @@ class TradingAgent:
                 f"📊 Risk/Reward: {rr_ratio}:1 ({rr_status})"
             )
 
-        # Volatility consideration
         volatility = technical_data["atr"]["volatility"]
         if volatility in ["HIGH", "EXTREME"]:
             recommendations.append(
                 f"⚡ {volatility} volatility detected - consider reducing position size by 50%"
             )
 
-        # Trend alignment
         trend = technical_data["moving_averages"]["trend"]
         if "STRONG" in trend:
             recommendations.append(
@@ -271,7 +255,6 @@ class TradingAgent:
                 "↔ Sideways market - wait for breakout or reduce position size"
             )
 
-        # Pattern recognition
         patterns = chart_data.get("patterns", [])
         if patterns:
             strong_patterns = [p for p in patterns if p.get("confidence", 0) >= 80]
@@ -281,7 +264,6 @@ class TradingAgent:
                     f"🎯 Strong patterns detected: {pattern_names}"
                 )
 
-        # Quality check
         if not quality_validation["passed"]:
             recommendations.append(
                 "⛔ Signal quality below threshold - recommend SKIP this trade"
@@ -291,7 +273,6 @@ class TradingAgent:
                     f"Issues: {', '.join(quality_validation['issues'][:2])}"
                 )
 
-        # Final recommendation
         if quality_validation["passed"] and risk_data:
             if risk_data["risk_checks"]["all_passed"]:
                 recommendations.append(
@@ -334,7 +315,6 @@ class TradingAgent:
         else:
             checklist["risk_limits_ok"] = False
 
-        # Check if all ready
         checklist["all_ready"] = all([
             checklist["price_action_confirmed"],
             checklist["momentum_aligned"],

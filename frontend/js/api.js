@@ -1,10 +1,4 @@
-/* ═══════════════════════════════════════════════════════════════════ */
-/* API INTEGRATION MODULE                                               */
-/* ═══════════════════════════════════════════════════════════════════ */
 
-/**
- * API Configuration
- */
 const API_CONFIG = {
   baseUrl: "http://localhost:8000/api",
   timeout: 30000,
@@ -13,21 +7,11 @@ const API_CONFIG = {
   },
 };
 
-/**
- * API Request Class
- */
 class APIRequest {
   constructor(config = {}) {
     this.config = { ...API_CONFIG, ...config };
   }
 
-  /**
-   * Make HTTP request
-   * @param {string} method - HTTP method
-   * @param {string} endpoint - API endpoint
-   * @param {Object} options - Request options
-   * @returns {Promise} Response data
-   */
   async request(method, endpoint, options = {}) {
     const url = `${this.config.baseUrl}${endpoint}`;
 
@@ -66,37 +50,22 @@ class APIRequest {
     }
   }
 
-  /**
-   * GET request
-   */
   get(endpoint, options = {}) {
     return this.request("GET", endpoint, options);
   }
 
-  /**
-   * POST request
-   */
   post(endpoint, body, options = {}) {
     return this.request("POST", endpoint, { ...options, body });
   }
 
-  /**
-   * PUT request
-   */
   put(endpoint, body, options = {}) {
     return this.request("PUT", endpoint, { ...options, body });
   }
 
-  /**
-   * DELETE request
-   */
   delete(endpoint, options = {}) {
     return this.request("DELETE", endpoint, options);
   }
 
-  /**
-   * POST with FormData (for file uploads)
-   */
   async postForm(endpoint, formData, options = {}) {
     const url = `${this.config.baseUrl}${endpoint}`;
 
@@ -104,7 +73,6 @@ class APIRequest {
       method: "POST",
       headers: {
         ...options.headers,
-        // Don't set Content-Type for FormData, browser will set it
       },
       timeout: this.config.timeout,
       body: formData,
@@ -133,9 +101,6 @@ class APIRequest {
   }
 }
 
-/**
- * Custom API Error class
- */
 class APIError extends Error {
   constructor(message, status = 0, details = {}) {
     super(message);
@@ -145,19 +110,11 @@ class APIError extends Error {
   }
 }
 
-/**
- * Trading API Service
- */
 class TradingAPI {
   constructor() {
     this.api = new APIRequest();
   }
 
-  /**
-   * Analyze trading chart
-   * @param {FormData|Object} data - Analysis parameters
-   * @returns {Promise} Analysis result
-   */
   async analyzeChart(data) {
     if (data instanceof FormData) {
       return this.api.postForm("/analyze", data);
@@ -165,89 +122,45 @@ class TradingAPI {
     return this.api.post("/analyze", data);
   }
 
-  /**
-   * Get analysis summary
-   * @returns {Promise} Summary data
-   */
   async getSummary() {
     return this.api.get("/summary");
   }
 
-  /**
-   * Get available indicators
-   * @returns {Promise} List of indicators
-   */
   async getIndicators() {
     return this.api.get("/indicators/list");
   }
 
-  /**
-   * Get trading history
-   * @param {Object} params - Query parameters
-   * @returns {Promise} History data
-   */
   async getHistory(params = {}) {
     const queryString = buildQueryString(params);
     const endpoint = `/history${queryString ? "?" + queryString : ""}`;
     return this.api.get(endpoint);
   }
 
-  /**
-   * Get portfolio data
-   * @returns {Promise} Portfolio data
-   */
   async getPortfolio() {
     return this.api.get("/portfolio");
   }
 
-  /**
-   * Execute trade
-   * @param {Object} tradeData - Trade parameters
-   * @returns {Promise} Trade execution result
-   */
   async executeTrade(tradeData) {
     return this.api.post("/trades/execute", tradeData);
   }
 
-  /**
-   * Get trade details
-   * @param {string} tradeId - Trade ID
-   * @returns {Promise} Trade data
-   */
   async getTrade(tradeId) {
     return this.api.get(`/trades/${tradeId}`);
   }
 
-  /**
-   * Close trade
-   * @param {string} tradeId - Trade ID
-   * @param {Object} closeData - Close parameters
-   * @returns {Promise} Close result
-   */
   async closeTrade(tradeId, closeData) {
     return this.api.post(`/trades/${tradeId}/close`, closeData);
   }
 
-  /**
-   * Get performance metrics
-   * @returns {Promise} Performance data
-   */
   async getPerformance() {
     return this.api.get("/performance");
   }
 
-  /**
-   * Health check
-   * @returns {Promise} Server status
-   */
   async healthCheck() {
     return this.api.get("/health");
   }
 }
 
-/**
- * WebSocket Manager for real-time signals
- */
 class SignalWebSocket {
   constructor(url = "ws://localhost:8000/ws/signals") {
     this.url = url;
@@ -258,9 +171,6 @@ class SignalWebSocket {
     this.reconnectDelay = 3000;
   }
 
-  /**
-   * Connect to WebSocket
-   */
   connect() {
     return new Promise((resolve, reject) => {
       try {
@@ -299,9 +209,6 @@ class SignalWebSocket {
     });
   }
 
-  /**
-   * Attempt to reconnect
-   */
   attemptReconnect() {
     if (this.reconnectAttempts < this.maxReconnectAttempts) {
       this.reconnectAttempts++;
@@ -309,7 +216,6 @@ class SignalWebSocket {
 
       setTimeout(() => {
         this.connect().catch(() => {
-          // Retry will happen in onclose
         });
       }, this.reconnectDelay);
     } else {
@@ -318,9 +224,6 @@ class SignalWebSocket {
     }
   }
 
-  /**
-   * Disconnect WebSocket
-   */
   disconnect() {
     if (this.ws) {
       this.ws.close();
@@ -328,21 +231,12 @@ class SignalWebSocket {
     }
   }
 
-  /**
-   * Send message
-   * @param {Object} data - Data to send
-   */
   send(data) {
     if (this.ws && this.ws.readyState === WebSocket.OPEN) {
       this.ws.send(JSON.stringify(data));
     }
   }
 
-  /**
-   * Listen to events
-   * @param {string} event - Event name
-   * @param {function} callback - Callback function
-   */
   on(event, callback) {
     if (!this.listeners[event]) {
       this.listeners[event] = [];
@@ -350,11 +244,6 @@ class SignalWebSocket {
     this.listeners[event].push(callback);
   }
 
-  /**
-   * Remove event listener
-   * @param {string} event - Event name
-   * @param {function} callback - Callback function
-   */
   off(event, callback) {
     if (this.listeners[event]) {
       this.listeners[event] = this.listeners[event].filter(
@@ -363,11 +252,6 @@ class SignalWebSocket {
     }
   }
 
-  /**
-   * Emit event
-   * @param {string} event - Event name
-   * @param {*} data - Event data
-   */
   emit(event, data) {
     if (this.listeners[event]) {
       this.listeners[event].forEach((callback) => {
@@ -376,29 +260,16 @@ class SignalWebSocket {
     }
   }
 
-  /**
-   * Check if connected
-   * @returns {boolean} Connection status
-   */
   isConnected() {
     return this.ws && this.ws.readyState === WebSocket.OPEN;
   }
 }
 
-/* ═══════════════════════════════════════════════════════════════════ */
-/* GLOBAL API INSTANCES                                                 */
-/* ═══════════════════════════════════════════════════════════════════ */
 
-// Create global API instance
 const api = new TradingAPI();
 
-// Create WebSocket instance (don't connect automatically)
 let signalWS = null;
 
-/**
- * Initialize WebSocket connection
- * @returns {Promise}
- */
 async function initializeWebSocket() {
   if (!signalWS) {
     signalWS = new SignalWebSocket();
@@ -407,23 +278,13 @@ async function initializeWebSocket() {
   return signalWS.connect();
 }
 
-/**
- * Disconnect WebSocket
- */
 function disconnectWebSocket() {
   if (signalWS) {
     signalWS.disconnect();
   }
 }
 
-/* ═══════════════════════════════════════════════════════════════════ */
-/* ERROR HANDLER MIDDLEWARE                                            */
-/* ═══════════════════════════════════════════════════════════════════ */
 
-/**
- * Handle API errors
- * @param {APIError} error - API error
- */
 function handleAPIError(error) {
   console.error("API Error:", error);
 
@@ -451,12 +312,6 @@ function handleAPIError(error) {
   return { message, type };
 }
 
-/**
- * Wrap API call with error handling
- * @param {Promise} apiCall - API call promise
- * @param {Object} options - Options
- * @returns {Promise}
- */
 async function withErrorHandling(apiCall, options = {}) {
   try {
     return await apiCall;
@@ -471,20 +326,4 @@ async function withErrorHandling(apiCall, options = {}) {
   }
 }
 
-/* ═══════════════════════════════════════════════════════════════════ */
-/* EXPORT FOR MODULE USAGE                                             */
-/* ═══════════════════════════════════════════════════════════════════ */
 
-// if (typeof module !== 'undefined' && module.exports) {
-//   module.exports = {
-//     APIRequest,
-//     APIError,
-//     TradingAPI,
-//     SignalWebSocket,
-//     api,
-//     initializeWebSocket,
-//     disconnectWebSocket,
-//     handleAPIError,
-//     withErrorHandling
-//   };
-// }

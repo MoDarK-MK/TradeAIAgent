@@ -10,10 +10,8 @@ from app.config import settings
 def setup_logger():
     """Configure logger with file and console output"""
     
-    # Remove default logger
     logger.remove()
     
-    # Console output
     logger.add(
         sys.stdout,
         colorize=True,
@@ -21,7 +19,6 @@ def setup_logger():
         level=settings.log_level
     )
     
-    # File output
     logger.add(
         settings.log_file,
         rotation="500 MB",
@@ -34,5 +31,4 @@ def setup_logger():
     return logger
 
 
-# Initialize logger
 log = setup_logger()

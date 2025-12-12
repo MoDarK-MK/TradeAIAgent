@@ -99,7 +99,6 @@ class RiskManager:
             StopLoss object
         """
         if method == StopLossMethod.ATR_BASED:
-            # ATR-based: 1.5x ATR from entry
             if signal_type == "BUY":
                 sl_price = entry_price - (atr * 1.5)
                 invalidation = f"Price closes below {sl_price:.2f} (1.5x ATR)"
@@ -108,7 +107,6 @@ class RiskManager:
                 invalidation = f"Price closes above {sl_price:.2f} (1.5x ATR)"
 
         elif method == StopLossMethod.LEVEL_BASED:
-            # Level-based: Just beyond support/resistance
             if signal_type == "BUY":
                 if support_level is None:
                     support_level = entry_price - (atr * 2)
@@ -121,7 +119,6 @@ class RiskManager:
                 invalidation = f"Price breaks above resistance at {resistance_level:.2f}"
 
         elif method == StopLossMethod.PERCENTAGE_BASED:
-            # Percentage-based: 2-3% from entry
             stop_percent = 0.025  # 2.5%
             if signal_type == "BUY":
                 sl_price = entry_price * (1 - stop_percent)
@@ -130,7 +127,6 @@ class RiskManager:
                 sl_price = entry_price * (1 + stop_percent)
                 invalidation = f"Price rises {stop_percent*100}% from entry"
 
-        # Calculate distance
         distance = abs(entry_price - sl_price)
         distance_pips = distance
         distance_percent = (distance / entry_price) * 100
@@ -168,7 +164,6 @@ class RiskManager:
         """
         risk_distance = stop_loss.distance_pips
 
-        # TP1: 1:1 Risk/Reward (50% position)
         if signal_type == "BUY":
             tp1_price = entry_price + risk_distance
         else:
@@ -182,7 +177,6 @@ class RiskManager:
             position_percentage=50
         )
 
-        # TP2: 1:2 Risk/Reward (30% position)
         if signal_type == "BUY":
             tp2_price = entry_price + (risk_distance * 2)
         else:
@@ -196,15 +190,12 @@ class RiskManager:
             position_percentage=30
         )
 
-        # TP3: 1:3 Risk/Reward or next major level (20% position)
         if signal_type == "BUY":
             tp3_price = entry_price + (risk_distance * 3)
-            # Adjust to resistance if available and closer
             if resistance_level and resistance_level > tp2_price and resistance_level < tp3_price * 1.2:
                 tp3_price = resistance_level
         else:
             tp3_price = entry_price - (risk_distance * 3)
-            # Adjust to support if available and closer
             if support_level and support_level < tp2_price and support_level > tp3_price * 0.8:
                 tp3_price = support_level
 
@@ -246,25 +237,20 @@ class RiskManager:
 
         risk_amount = capital * (self.max_risk_percent / 100)
 
-        # Calculate weighted average profit
         tp1 = take_profits["tp1"]
         tp2 = take_profits["tp2"]
         tp3 = take_profits["tp3"]
 
-        # Weighted profit calculation
         total_profit = (
             (tp1.distance_pips * tp1.position_percentage / 100) +
             (tp2.distance_pips * tp2.position_percentage / 100) +
             (tp3.distance_pips * tp3.position_percentage / 100)
         )
 
-        # Calculate actual ratio
         ratio = total_profit / stop_loss.distance_pips
 
-        # Actual profit target in currency
         profit_target = risk_amount * ratio
 
-        # Classify status
         if ratio >= 2.5:
             status = "EXCELLENT"
         elif ratio >= 2.0:
@@ -308,15 +294,11 @@ class RiskManager:
         risk_amount = capital * (risk_percent / 100)
         sl_distance = stop_loss.distance_pips
 
-        # Calculate position size
-        # Position Size = Risk Amount / Stop Loss Distance
         units = risk_amount / sl_distance
         position_value = units * entry_price
         
-        # Calculate lot size (for forex: 1 lot = 100,000 units)
         lot_size = units / 100000
 
-        # Calculate leverage required
         leverage_required = position_value / capital
 
         return PositionSize(
@@ -409,28 +391,22 @@ class RiskManager:
             New stop loss price or None if not in profit
         """
         if signal_type == "BUY":
-            # Check if in profit
             if current_price <= entry_price:
                 return None
             
-            # Trail by 0.5x ATR
             trailing_sl = current_price - (atr * profit_locked)
             
-            # Never trail below entry (move to BE + small buffer first)
             if trailing_sl < entry_price:
                 trailing_sl = entry_price + (entry_price * 0.001)  # BE + 0.1%
             
             return round(trailing_sl, 2)
         
         else:  # SELL
-            # Check if in profit
             if current_price >= entry_price:
                 return None
             
-            # Trail by 0.5x ATR
             trailing_sl = current_price + (atr * profit_locked)
             
-            # Never trail above entry
             if trailing_sl > entry_price:
                 trailing_sl = entry_price - (entry_price * 0.001)
             
@@ -451,7 +427,6 @@ class RiskManager:
         Returns:
             Comprehensive risk management data
         """
-        # Calculate Stop Loss (try level-based first, fallback to ATR)
         if signal_type == "BUY" and support_level:
             sl_method = StopLossMethod.LEVEL_BASED
         elif signal_type == "SELL" and resistance_level:
@@ -468,7 +443,6 @@ class RiskManager:
             method=sl_method
         )
 
-        # Calculate Take Profits
         take_profits = self.calculate_take_profits(
             entry_price=entry_price,
             stop_loss=stop_loss,
@@ -478,20 +452,17 @@ class RiskManager:
             fib_levels=fib_levels
         )
 
-        # Calculate Risk/Reward
         risk_reward = self.calculate_risk_reward(
             entry_price=entry_price,
             stop_loss=stop_loss,
             take_profits=take_profits
         )
 
-        # Calculate Position Size
         position_size = self.calculate_position_size(
             entry_price=entry_price,
             stop_loss=stop_loss
         )
 
-        # Check limits
         daily_check = self.check_daily_loss_limit(risk_reward.risk_amount)
         portfolio_check = self.check_portfolio_risk(risk_reward.risk_amount)
 

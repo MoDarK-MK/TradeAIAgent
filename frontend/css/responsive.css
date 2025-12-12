@@ -1,10 +1,4 @@
-/* ═══════════════════════════════════════════════════════════════════ */
-/* RESPONSIVE DESIGN BREAKPOINTS                                        */
-/* ═══════════════════════════════════════════════════════════════════ */
 
-/* ─────────────────────────────────────────────────────────────────── */
-/* TABLET (640px - 1024px)                                             */
-/* ─────────────────────────────────────────────────────────────────── */
 
 @media (max-width: 1024px) {
   body {
@@ -51,9 +45,6 @@
   }
 }
 
-/* ─────────────────────────────────────────────────────────────────── */
-/* MOBILE (< 640px)                                                    */
-/* ─────────────────────────────────────────────────────────────────── */
 
 @media (max-width: 640px) {
   :root {
@@ -66,7 +57,6 @@
     grid-template-rows: 64px 1fr;
   }
 
-  /* HEADER */
   .header {
     grid-column: 1;
   }
@@ -102,7 +92,6 @@
     display: flex;
   }
 
-  /* SIDEBAR */
   .sidebar {
     position: fixed;
     left: 0;
@@ -125,7 +114,6 @@
     bottom: var(--sp-md);
   }
 
-  /* MAIN CONTENT */
   .main-content {
     grid-column: 1;
     grid-row: 2;
@@ -144,7 +132,6 @@
     display: none;
   }
 
-  /* LAYOUT */
   .analysis-grid {
     grid-template-columns: 1fr;
     gap: var(--sp-md);
@@ -166,7 +153,6 @@
     padding: var(--sp-sm);
   }
 
-  /* UPLOAD AREA */
   .upload-area {
     min-height: 150px;
     padding: var(--sp-lg);
@@ -181,7 +167,6 @@
     height: 150px;
   }
 
-  /* FORMS */
   .form-group {
     margin-bottom: var(--sp-md);
   }
@@ -195,7 +180,6 @@
     font-size: 16px; /* Prevent zoom on iOS */
   }
 
-  /* BUTTONS */
   .btn {
     font-size: var(--fs-body);
     padding: 12px 16px;
@@ -210,7 +194,6 @@
     grid-template-columns: 1fr;
   }
 
-  /* SIGNAL */
   .signal-container {
     grid-template-columns: 1fr;
     gap: var(--sp-md);
@@ -229,7 +212,6 @@
     width: 100%;
   }
 
-  /* LADDER */
   .ladder-item {
     padding: var(--sp-md);
     flex-direction: column;
@@ -242,7 +224,6 @@
     margin-top: 8px;
   }
 
-  /* STATS */
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: var(--sp-md);
@@ -262,7 +243,6 @@
     font-size: var(--fs-body-lg);
   }
 
-  /* INDICATORS */
   .indicators-grid {
     grid-template-columns: 1fr;
     gap: var(--sp-sm);
@@ -272,7 +252,6 @@
     padding: var(--sp-sm);
   }
 
-  /* ACTION BUTTONS */
   .action-buttons {
     gap: var(--sp-sm);
   }
@@ -282,13 +261,11 @@
     padding: 10px 16px;
   }
 
-  /* EMPTY STATE */
   .empty-state {
     min-height: 300px;
     padding: var(--sp-lg);
   }
 
-  /* TOAST */
   .toast-container {
     top: 72px;
     right: var(--sp-sm);
@@ -300,7 +277,6 @@
     width: 100%;
   }
 
-  /* PROFILE DROPDOWN */
   .profile-dropdown {
     position: fixed;
     left: 0;
@@ -313,15 +289,11 @@
     overflow-y: auto;
   }
 
-  /* SCROLLBAR */
   ::-webkit-scrollbar {
     width: 4px;
   }
 }
 
-/* ─────────────────────────────────────────────────────────────────── */
-/* SMALL MOBILE (< 360px)                                              */
-/* ─────────────────────────────────────────────────────────────────── */
 
 @media (max-width: 360px) {
   :root {
@@ -373,9 +345,6 @@
   }
 }
 
-/* ─────────────────────────────────────────────────────────────────── */
-/* LANDSCAPE MODE                                                      */
-/* ─────────────────────────────────────────────────────────────────── */
 
 @media (max-height: 600px) and (orientation: landscape) {
   .header {
@@ -434,9 +403,6 @@
   }
 }
 
-/* ─────────────────────────────────────────────────────────────────── */
-/* ULTRA-WIDE DISPLAYS (> 1600px)                                     */
-/* ─────────────────────────────────────────────────────────────────── */
 
 @media (min-width: 1600px) {
   body {
@@ -462,9 +428,6 @@
   }
 }
 
-/* ─────────────────────────────────────────────────────────────────── */
-/* PRINT STYLES                                                        */
-/* ─────────────────────────────────────────────────────────────────── */
 
 @media print {
   .header,
@@ -500,9 +463,6 @@
   }
 }
 
-/* ─────────────────────────────────────────────────────────────────── */
-/* DARK MODE SPECIFIC STYLES                                           */
-/* ─────────────────────────────────────────────────────────────────── */
 
 @media (prefers-color-scheme: light) {
   :root {
@@ -545,9 +505,6 @@
   }
 }
 
-/* ─────────────────────────────────────────────────────────────────── */
-/* REDUCED MOTION                                                      */
-/* ─────────────────────────────────────────────────────────────────── */
 
 @media (prefers-reduced-motion: reduce) {
   * {
@@ -557,9 +514,6 @@
   }
 }
 
-/* ─────────────────────────────────────────────────────────────────── */
-/* HIGH CONTRAST MODE                                                  */
-/* ─────────────────────────────────────────────────────────────────── */
 
 @media (prefers-contrast: more) {
   .btn {
@@ -578,9 +532,6 @@
   }
 }
 
-/* ─────────────────────────────────────────────────────────────────── */
-/* FOCUS VISIBLE ENHANCEMENTS                                          */
-/* ─────────────────────────────────────────────────────────────────── */
 
 *:focus-visible {
   outline: 3px solid var(--color-primary);

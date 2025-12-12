@@ -1,10 +1,11 @@
-# Strix Trade - Frontend Dashboard
+# MOD Trade - Frontend Dashboard
 
 Professional enterprise-grade UI/UX for the AI Trading Agent platform. Built with HTML5, CSS3, and Vanilla JavaScript.
 
 ## 🎨 Design System
 
 ### Color Palette
+
 - **Primary**: `#00D9FF` (Cyan - Trust, Technology)
 - **Success**: `#00FF88` (Green - Profit, BUY)
 - **Danger**: `#FF3333` (Red - Risk, SELL)
@@ -13,12 +14,14 @@ Professional enterprise-grade UI/UX for the AI Trading Agent platform. Built wit
 - **Card BG**: `#1A1F3A` (Elevated surfaces)
 
 ### Typography
+
 - **Display (H1)**: 32px, Weight 700
 - **Heading (H2)**: 24px, Weight 600
 - **Body**: 14px, Weight 400
 - **Monospace**: JetBrains Mono (for prices/values)
 
 ### Spacing (8px base)
+
 - `xs`: 4px
 - `sm`: 8px
 - `md`: 16px
@@ -27,6 +30,7 @@ Professional enterprise-grade UI/UX for the AI Trading Agent platform. Built wit
 - `2xl`: 48px
 
 ### Border Radius
+
 - `sm`: 4px (tight inputs)
 - `md`: 8px (cards, buttons)
 - `lg`: 12px (major sections)
@@ -56,6 +60,7 @@ frontend/
 ## 🚀 Features
 
 ### Dashboard
+
 - Chart image upload (drag-and-drop support)
 - Trading parameters configuration
 - Quick presets (Conservative, Balanced, Aggressive)
@@ -63,6 +68,7 @@ frontend/
 - Trade setup visualization (Entry → TP1 → TP2 → TP3 → SL)
 
 ### UI Components
+
 - Professional buttons (Primary, Secondary, Success, Danger)
 - Glassmorphism cards with hover effects
 - Form inputs with validation feedback
@@ -71,6 +77,7 @@ frontend/
 - Responsive grid layouts
 
 ### Interactivity
+
 - Smooth animations and transitions
 - Keyboard shortcuts (Cmd+K search, Cmd+Enter analyze, Esc close)
 - Mobile-optimized touch targets (44px minimum)
@@ -79,6 +86,7 @@ frontend/
 - Toast notifications
 
 ### Accessibility
+
 - WCAG 2.1 AA compliance
 - Semantic HTML5
 - ARIA labels and landmarks
@@ -91,12 +99,14 @@ frontend/
 ## 📱 Responsive Design
 
 ### Breakpoints
+
 - **Mobile**: < 640px (single column stack)
 - **Tablet**: 640px - 1024px (2 columns)
 - **Desktop**: > 1024px (3 columns optimal)
 - **Ultra-wide**: > 1600px (sidebar + main + insights)
 
 ### Mobile Optimizations
+
 - Full-width buttons
 - Hamburger navigation menu
 - Touch-friendly spacing (min 44px)
@@ -107,6 +117,7 @@ frontend/
 ## 🎯 Key Sections
 
 ### 1. Header
+
 - Logo with brand name
 - Main navigation links
 - Search functionality
@@ -116,6 +127,7 @@ frontend/
 - Mobile hamburger menu
 
 ### 2. Sidebar
+
 - Collapsible navigation
 - Dashboard, Analysis, Portfolio, History links
 - Settings, Documentation, Help links
@@ -123,12 +135,14 @@ frontend/
 - Toggle button to collapse
 
 ### 3. Main Content
+
 - **Upload Area**: Drag-and-drop chart upload
 - **Parameters**: Symbol, timeframe, capital, risk settings
 - **Results**: Signal display, trade setup ladder, metrics
 - **Indicators**: Technical indicator breakdown
 
 ### 4. Results Panel
+
 - Signal badge (BUY/SELL/HOLD)
 - Confidence meter with quality score
 - Trade ladder showing Entry, TP1-3, SL
@@ -139,6 +153,7 @@ frontend/
 ## 🔧 API Integration
 
 ### Endpoints
+
 The frontend connects to these FastAPI backend endpoints:
 
 ```javascript
@@ -156,6 +171,7 @@ WS ws://localhost:8000/ws/signals
 ```
 
 ### Error Handling
+
 - User-friendly error messages
 - Toast notifications for feedback
 - Field validation with error display
@@ -165,26 +181,29 @@ WS ws://localhost:8000/ws/signals
 ## ⚙️ Configuration
 
 ### API Base URL
+
 Edit `API_CONFIG` in `js/api.js`:
+
 ```javascript
 const API_CONFIG = {
-  baseUrl: 'http://localhost:8000/api',  // Change this
+  baseUrl: "http://localhost:8000/api", // Change this
   timeout: 30000,
-  headers: { 'Content-Type': 'application/json' }
+  headers: { "Content-Type": "application/json" },
 };
 ```
 
 ### Theme
+
 - Automatic detection of system preference
 - Manual toggle available
 - Stored in `localStorage`
 
 ```javascript
 // Get current theme
-const theme = getThemePreference();  // 'light' or 'dark'
+const theme = getThemePreference(); // 'light' or 'dark'
 
 // Set theme
-setTheme('dark');
+setTheme("dark");
 
 // Toggle theme
 toggleTheme();
@@ -193,18 +212,22 @@ toggleTheme();
 ## 🎨 Customization
 
 ### Color Scheme
+
 Update CSS variables in `css/design-system.css`:
+
 ```css
 :root {
-  --color-primary: #00D9FF;
-  --color-success: #00FF88;
-  --color-danger: #FF3333;
+  --color-primary: #00d9ff;
+  --color-success: #00ff88;
+  --color-danger: #ff3333;
   /* ... more colors ... */
 }
 ```
 
 ### Typography
+
 Modify font sizes and weights:
+
 ```css
 :root {
   --fs-h1: 32px;
@@ -215,7 +238,9 @@ Modify font sizes and weights:
 ```
 
 ### Spacing
+
 Adjust spacing system:
+
 ```css
 :root {
   --sp-md: 16px;
@@ -227,6 +252,7 @@ Adjust spacing system:
 ## 🧪 Development
 
 ### Local Development
+
 ```bash
 # 1. Start the FastAPI backend
 cd ../app
@@ -245,12 +271,14 @@ open http://localhost:3000
 ```
 
 ### Browser DevTools
+
 - Use browser DevTools for debugging
 - Check Console for errors
 - Use Network tab to monitor API calls
 - Use Device toolbar for responsive testing
 
 ### Performance
+
 - Lazy load images
 - Minify CSS/JS for production
 - Use CSS variables for fast theme switching
@@ -274,6 +302,7 @@ open http://localhost:3000
 ```
 
 ### WCAG 2.1 Compliance
+
 - ✅ Text has sufficient contrast (4.5:1)
 - ✅ All interactive elements are keyboard accessible
 - ✅ Forms are labeled and associated with inputs
@@ -285,6 +314,7 @@ open http://localhost:3000
 ## 🚀 Production Deployment
 
 ### Build for Production
+
 ```bash
 # Minify CSS
 css-minify css/*.css -o css/style.min.css
@@ -298,19 +328,21 @@ terser js/*.js -o js/script.min.js
 ```
 
 ### Deploy to Web Server
+
 ```bash
 # Option 1: Serve static files with Nginx
 # Copy frontend files to /var/www/html
 
 # Option 2: Deploy with Docker
-docker build -f Dockerfile.frontend -t strix-trade-frontend .
-docker run -p 80:80 strix-trade-frontend
+docker build -f Dockerfile.frontend -t MOD-trade-frontend .
+docker run -p 80:80 MOD-trade-frontend
 
 # Option 3: Deploy with Vercel/Netlify
 # Connect GitHub repo and deploy automatically
 ```
 
 ### Environment Configuration
+
 ```bash
 # Create .env file for production
 API_BASE_URL=https://api.example.com/api
@@ -320,6 +352,7 @@ WEBSOCKET_URL=wss://api.example.com/ws
 ## 📝 Best Practices
 
 ### Code Organization
+
 - Keep CSS modular and DRY
 - Use semantic HTML
 - Follow naming conventions (BEM for CSS)
@@ -327,6 +360,7 @@ WEBSOCKET_URL=wss://api.example.com/ws
 - Keep functions small and focused
 
 ### Performance
+
 - Minimize DOM manipulation
 - Use event delegation
 - Cache DOM references
@@ -334,6 +368,7 @@ WEBSOCKET_URL=wss://api.example.com/ws
 - Load fonts asynchronously
 
 ### Security
+
 - Sanitize user input
 - Use HTTPS in production
 - Implement CORS properly
@@ -343,14 +378,16 @@ WEBSOCKET_URL=wss://api.example.com/ws
 ## 🐛 Troubleshooting
 
 ### API Connection Issues
+
 ```javascript
 // Check if API is reachable
-fetch('http://localhost:8000/health')
-  .then(r => console.log('API status:', r.status))
-  .catch(e => console.error('API error:', e));
+fetch("http://localhost:8000/health")
+  .then((r) => console.log("API status:", r.status))
+  .catch((e) => console.error("API error:", e));
 ```
 
 ### Theme Not Persisting
+
 ```javascript
 // Clear localStorage and refresh
 localStorage.clear();
@@ -358,12 +395,14 @@ location.reload();
 ```
 
 ### Form Validation Not Working
+
 ```javascript
 // Check browser console for errors
 // Verify input attributes (type, min, max, required)
 ```
 
 ### WebSocket Connection Failed
+
 ```javascript
 // Ensure backend is running with WebSocket support
 // Check browser console for connection errors
@@ -380,11 +419,12 @@ location.reload();
 
 ## 📄 License
 
-This frontend is part of the Strix Trade AI Trading Agent project. Licensed under MIT.
+This frontend is part of the MOD Trade AI Trading Agent project. Licensed under MIT.
 
 ## 🤝 Contributing
 
 Contributions are welcome! Please ensure:
+
 - Code follows project conventions
 - All changes are tested
 - Accessibility is maintained
@@ -392,4 +432,4 @@ Contributions are welcome! Please ensure:
 
 ---
 
-Built with ❤️ for professional traders | © 2025 Strix Trade
+Built with ❤️ for professional traders | © 2025 MOD Trade
