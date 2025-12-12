@@ -78,19 +78,20 @@ Before you begin, ensure you have the following installed:
 
 ## 📝 Running Examples
 
-### Example 1: Basic Usage
+### Example 1: Basic Usage (with g4f LLM)
 
 ```powershell
-python examples\example_usage.py
+python run_agent.py
 ```
 
 This will:
 
+- Initialize the trading agent with g4f
 - Generate sample BTC/USD data
-- Perform complete technical analysis
-- Generate trading signals
-- Calculate risk management parameters
-- Display comprehensive results
+- Perform technical analysis
+- Generate AI-powered trading recommendations via g4f
+- Display LLM analysis
+- **No API key required!**
 
 ### Example 2: API Usage
 
@@ -98,7 +99,6 @@ This will:
 import requests
 import numpy as np
 
-# Generate sample data
 data = {
     "symbol": "BTC/USD",
     "timeframe": "1H",
@@ -113,12 +113,11 @@ data = {
     "risk_percent": 2.0
 }
 
-# Make API request
 response = requests.post("http://localhost:8000/analyze", json=data)
 analysis = response.json()
 
 print(f"Signal: {analysis['signal']['type']}")
-print(f"Confidence: {analysis['signal']['confidence']}%")
+print(f"LLM Analysis: {analysis.get('llm_analysis')}")
 ```
 
 ## 🧪 Running Tests

@@ -22,6 +22,54 @@ A professional-grade AI-powered trading system that analyzes charts, generates s
 - **Multi-Timeframe Analysis**: Daily, 4H, 1H, 15M coordination
 - **Database Integration**: PostgreSQL/TimescaleDB for historical data
 
+## 🤖 AI Integration with g4f
+
+The MOD Trading Agent uses **g4f** library to integrate with GPT-4 for advanced market analysis without requiring an API key.
+
+### Features
+
+- **No API Key Required**: Uses g4f for free access to GPT-4
+- **Automatic LLM Analysis**: Every trade generates AI-powered recommendations
+- **Multi-provider Support**: Can switch between different LLM providers
+- **Async Support**: Non-blocking AI analysis for fast response times
+
+### Usage
+
+```python
+from app.core.trading_agent import TradingAgent
+import numpy as np
+
+agent = TradingAgent(capital=10000)
+
+close = np.array([100, 101, 102, 103, 104, 103, 105, 106])
+high = close + 1
+low = close - 1
+open_prices = close
+volume = np.random.randint(1000000, 10000000, len(close))
+
+analysis = agent.analyze(
+    symbol="BTC/USD",
+    timeframe="1H",
+    open_prices=open_prices,
+    high=high,
+    low=low,
+    close=close,
+    volume=volume
+)
+
+print(analysis['llm_analysis'])
+```
+
+### Configuration
+
+Set in `.env`:
+
+```env
+USE_G4F=true
+G4F_PROVIDER=gpt-4-free
+GPT_MODEL=gpt-4
+```
+
 ## 📋 Prerequisites
 
 - Python 3.11+

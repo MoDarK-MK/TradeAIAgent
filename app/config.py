@@ -39,6 +39,10 @@ class Settings(BaseSettings):
     binance_api_secret: Optional[str] = Field(default=None, alias="BINANCE_API_SECRET")
     news_api_key: Optional[str] = Field(default=None, alias="NEWS_API_KEY")
     
+    use_g4f: bool = Field(default=True, alias="USE_G4F")
+    g4f_provider: str = Field(default="gpt-4-free", alias="G4F_PROVIDER")
+    gpt_model: str = Field(default="gpt-4", alias="GPT_MODEL")
+    
     secret_key: str = Field(default="your-secret-key-min-32-characters-long", alias="SECRET_KEY")
     algorithm: str = Field(default="HS256", alias="ALGORITHM")
     access_token_expire_minutes: int = Field(default=30, alias="ACCESS_TOKEN_EXPIRE_MINUTES")

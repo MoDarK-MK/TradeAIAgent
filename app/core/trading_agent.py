@@ -112,6 +112,14 @@ class TradingAgent:
             risk_data=risk_data,
             quality_validation=quality_validation
         )
+        
+        llm_analysis = self.signal_generator.generate_llm_analysis(
+            technical_data=technical_data,
+            chart_data=chart_data,
+            current_price=current_price,
+            symbol=symbol,
+            timeframe=timeframe
+        )
 
         execution_checklist = self._create_execution_checklist(
             signal=signal,
@@ -189,6 +197,7 @@ class TradingAgent:
             },
             "execution_checklist": execution_checklist,
             "recommendations": recommendations,
+            "llm_analysis": llm_analysis,
             "warnings": signal.warnings,
             "quality_validation": quality_validation,
             "risk_checks": risk_data["risk_checks"] if risk_data else None

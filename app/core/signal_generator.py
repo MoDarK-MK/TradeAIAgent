@@ -7,6 +7,8 @@ import numpy as np
 from typing import Dict, List, Optional
 from dataclasses import dataclass
 from enum import Enum
+from datetime import datetime
+from app.core.llm_provider import llm_provider
 
 
 class SignalType(Enum):
@@ -410,4 +412,35 @@ class SignalGenerator:
             "confluence_count": signal.confluence_count,
             "issues": issues,
             "recommendation": "TRADE" if passed else "SKIP"
+        }
+    def generate_llm_analysis(
+        self,
+        technical_data: Dict,
+        chart_data: Dict,
+        current_price: float,
+        symbol: str,
+        timeframe: str
+    ) -> Dict:
+        market_analysis = {
+            "symbol": symbol,
+            "timeframe": timeframe,
+            "current_price": current_price,
+            "technical_indicators": technical_data,
+            "chart_patterns": chart_data.get("patterns", []),
+            "support_resistance": {
+                "support": chart_data.get("nearest_support"),
+                "resistance": chart_data.get("nearest_resistance")
+            }
+        }
+        
+        llm_recommendation = llm_provider.generate_trading_recommendation(
+            market_analysis=market_analysis,
+            technical_indicators=technical_data,
+            chart_patterns=chart_data.get("patterns", [])
+        )
+        
+        return {
+            "llm_analysis": llm_recommendation,
+            "timestamp": str(datetime.now()),
+            "model": "g4f"
         }
