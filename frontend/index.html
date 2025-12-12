@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Strix Trade - AI Trading Agent Dashboard</title>
+    <link rel="stylesheet" href="css/design-system.css" />
+    <link rel="stylesheet" href="css/dashboard.css" />
+    <link rel="stylesheet" href="css/responsive.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <!-- Skip to main content link for accessibility -->
+    <a href="#main-content" class="sr-only">Skip to main content</a>
+
+    <!-- HEADER -->
+    <header class="header">
+      <div class="header-container">
+        <div class="header-left">
+          <div class="logo">
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+              <path
+                d="M16 2L28 8V16L16 22L4 16V8L16 2Z"
+                stroke="#00D9FF"
+                stroke-width="1.5"
+                fill="none"
+              />
+              <path
+                d="M16 12L20 14V18L16 20L12 18V14L16 12Z"
+                fill="#00D9FF"
+                opacity="0.6"
+              />
+            </svg>
+            <h1 class="logo-text">Strix Trade</h1>
+          </div>
+
+          <nav class="nav-main" aria-label="Main navigation">
+            <a href="#" class="nav-link active">Dashboard</a>
+            <a href="#" class="nav-link">Analysis</a>
+            <a href="#" class="nav-link">Portfolio</a>
+            <a href="#" class="nav-link">History</a>
+          </nav>
+        </div>
+
+        <div class="header-right">
+          <div class="search-wrapper">
+            <input
+              type="text"
+              class="search-input"
+              placeholder="Search..."
+              aria-label="Search"
+            />
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <circle
+                cx="6.5"
+                cy="6.5"
+                r="4"
+                stroke="currentColor"
+                stroke-width="1.5"
+                fill="none"
+              />
+              <path d="M10 10L14 14" stroke="currentColor" stroke-width="1.5" />
+            </svg>
+          </div>
+
+          <div class="header-actions">
+            <button
+              class="icon-btn notification-btn"
+              aria-label="Notifications"
+            >
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path
+                  d="M15 6.5C15 4.57 13.43 3 11.5 3C9.57 3 8 4.57 8 6.5V10C8 11.1 7.1 12 6 12H5C3.9 12 3 12.9 3 14V15C3 16.1 3.9 17 5 17H16C17.1 17 18 16.1 18 15V14C18 12.9 17.1 12 16 12H15V6.5Z"
+                  fill="currentColor"
+                  opacity="0.6"
+                />
+                <circle cx="16" cy="4" r="3" fill="#00FF88" />
+              </svg>
+              <span class="notification-badge">3</span>
+            </button>
+
+            <button class="icon-btn theme-toggle-btn" aria-label="Toggle theme">
+              <svg
+                class="icon-sun"
+                width="20"
+                height="20"
+                viewBox="0 0 20 20"
+                fill="none"
+              >
+                <circle cx="10" cy="10" r="3" fill="currentColor" />
+                <path
+                  d="M10 1V3M10 17V19M1 10H3M17 10H19"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                />
+                <circle
+                  cx="10"
+                  cy="10"
+                  r="7"
+                  stroke="currentColor"
+                  stroke-width="1"
+                  fill="none"
+                />
+              </svg>
+              <svg
+                class="icon-moon"
+                width="20"
+                height="20"
+                viewBox="0 0 20 20"
+                fill="none"
+                style="display: none"
+              >
+                <path
+                  d="M17 10.5C17 15.2 13.2 19 8.5 19C3.8 19 0 15.2 0 10.5C0 6.5 2.5 3.2 5.7 2C3.5 3.5 2 6 2 8.8C2 13.7 6.3 17.7 11.2 17.7C14.5 17.7 17.4 15.8 18.8 13"
+                  fill="currentColor"
+                />
+              </svg>
+            </button>
+
+            <div class="profile-menu">
+              <button class="profile-btn" aria-label="User profile">
+                <div class="profile-avatar">MK</div>
+                <span class="profile-status online" aria-hidden="true"></span>
+              </button>
+              <div class="profile-dropdown">
+                <a href="#" class="dropdown-item">Profile Settings</a>
+                <a href="#" class="dropdown-item">API Keys</a>
+                <hr class="dropdown-divider" />
+                <a href="#" class="dropdown-item logout">Logout</a>
+              </div>
+            </div>
+          </div>
+
+          <button
+            class="hamburger-btn"
+            aria-label="Toggle menu"
+            aria-expanded="false"
+          >
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <nav class="sidebar-nav" aria-label="Sidebar navigation">
+        <div class="sidebar-section">
+          <h3 class="sidebar-title">Main</h3>
+          <a href="#" class="sidebar-link active">
+            <span class="sidebar-icon">📊</span>
+            <span class="sidebar-label">Dashboard</span>
+          </a>
+          <a href="#" class="sidebar-link">
+            <span class="sidebar-icon">📈</span>
+            <span class="sidebar-label">Analysis</span>
+          </a>
+          <a href="#" class="sidebar-link">
+            <span class="sidebar-icon">💼</span>
+            <span class="sidebar-label">Portfolio</span>
+          </a>
+          <a href="#" class="sidebar-link">
+            <span class="sidebar-icon">📝</span>
+            <span class="sidebar-label">History</span>
+          </a>
+        </div>
+
+        <div class="sidebar-section">
+          <h3 class="sidebar-title">Tools</h3>
+          <a href="#" class="sidebar-link">
+            <span class="sidebar-icon">⚙️</span>
+            <span class="sidebar-label">Settings</span>
+          </a>
+          <a href="#" class="sidebar-link">
+            <span class="sidebar-icon">📚</span>
+            <span class="sidebar-label">Documentation</span>
+          </a>
+          <a href="#" class="sidebar-link">
+            <span class="sidebar-icon">❓</span>
+            <span class="sidebar-label">Help & Support</span>
+          </a>
+        </div>
+
+        <div class="sidebar-stats">
+          <div class="stat-item">
+            <span class="stat-label">Win Rate</span>
+            <span class="stat-value">72.5%</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Total Trades</span>
+            <span class="stat-value">234</span>
+          </div>
+        </div>
+      </nav>
+
+      <button
+        class="sidebar-toggle-btn"
+        aria-label="Toggle sidebar"
+        aria-expanded="true"
+      >
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <path
+            d="M12 2L6 10L12 18"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </button>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main id="main-content" class="main-content">
+      <div class="container">
+        <!-- PAGE TITLE -->
+        <div class="page-header">
+          <div>
+            <h2>Chart Analysis</h2>
+            <p class="text-secondary">
+              Upload a trading chart and get AI-powered analysis in seconds
+            </p>
+          </div>
+          <button class="btn btn-primary">
+            <span>📥</span>
+            New Analysis
+          </button>
+        </div>
+
+        <!-- MAIN GRID: Chart Upload + Live Analysis -->
+        <div class="analysis-grid">
+          <!-- LEFT PANEL: Chart Upload & Parameters -->
+          <div class="analysis-left">
+            <!-- UPLOAD SECTION -->
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Upload Chart</h3>
+              </div>
+              <div class="upload-area" id="uploadArea">
+                <div class="upload-placeholder">
+                  <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+                    <path
+                      d="M24 10V34M34 24H14M12 38H36C38.2 38 40 36.2 40 34V14C40 11.8 38.2 10 36 10H12C9.8 10 8 11.8 8 14V34C8 36.2 9.8 38 12 38Z"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <circle cx="18" cy="16" r="2" fill="currentColor" />
+                  </svg>
+                  <h3>Drag chart image here</h3>
+                  <p>
+                    or
+                    <button
+                      class="btn-link"
+                      onclick="document.getElementById('fileInput').click()"
+                    >
+                      browse files
+                    </button>
+                  </p>
+                  <p class="text-xs text-tertiary">
+                    Supported: PNG, JPG, JPEG (Max 10MB)
+                  </p>
+                </div>
+                <div
+                  class="upload-preview"
+                  id="uploadPreview"
+                  style="display: none"
+                >
+                  <img id="previewImage" src="" alt="Chart preview" />
+                  <button
+                    class="btn-clear"
+                    type="button"
+                    aria-label="Remove image"
+                  >
+                    ×
+                  </button>
+                </div>
+                <input
+                  type="file"
+                  id="fileInput"
+                  style="display: none"
+                  accept="image/*"
+                  aria-label="Upload chart image"
+                />
+              </div>
+            </div>
+
+            <!-- PARAMETERS SECTION -->
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Analysis Parameters</h3>
+              </div>
+              <div class="form-group">
+                <label for="symbol">Trading Symbol</label>
+                <input
+                  type="text"
+                  id="symbol"
+                  placeholder="e.g., BTC/USD"
+                  value="BTC/USD"
+                />
+                <span class="form-helper"
+                  >Enter the asset symbol for analysis</span
+                >
+              </div>
+
+              <div class="form-group">
+                <label for="timeframe">Timeframe</label>
+                <select id="timeframe">
+                  <option>5M</option>
+                  <option>15M</option>
+                  <option>1H</option>
+                  <option selected>4H</option>
+                  <option>1D</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="capital">Capital ($)</label>
+                <input
+                  type="number"
+                  id="capital"
+                  placeholder="10000"
+                  value="10000"
+                  min="100"
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="riskPercent">Risk per Trade (%)</label>
+                <input
+                  type="number"
+                  id="riskPercent"
+                  placeholder="2"
+                  value="2"
+                  min="0.5"
+                  max="5"
+                  step="0.5"
+                />
+                <span class="form-helper"
+                  >Maximum loss per trade (recommended 2%)</span
+                >
+              </div>
+
+              <div class="quick-presets">
+                <span class="text-sm">Quick Presets:</span>
+                <div class="preset-buttons">
+                  <button
+                    class="btn btn-sm btn-secondary"
+                    data-preset="conservative"
+                  >
+                    Conservative
+                  </button>
+                  <button
+                    class="btn btn-sm btn-secondary"
+                    data-preset="balanced"
+                  >
+                    Balanced
+                  </button>
+                  <button
+                    class="btn btn-sm btn-secondary"
+                    data-preset="aggressive"
+                  >
+                    Aggressive
+                  </button>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <button class="btn btn-primary btn-lg w-full" id="analyzeBtn">
+                  <span>⚡</span>
+                  Analyze Chart
+                </button>
+                <div
+                  class="loading-indicator"
+                  id="loadingIndicator"
+                  style="display: none"
+                >
+                  <div class="spinner"></div>
+                  <span>Processing analysis...</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT PANEL: Live Analysis Results -->
+          <div class="analysis-right">
+            <div id="analysisResults" style="display: none">
+              <!-- SIGNAL SECTION -->
+              <div class="card">
+                <div class="signal-container">
+                  <div class="signal-main">
+                    <div class="signal-badge buy" id="signalBadge">BUY</div>
+                    <div class="signal-info">
+                      <div class="signal-stat">
+                        <span class="text-sm text-tertiary">Signal Type</span>
+                        <span id="signalType" class="text-mono">BUY</span>
+                      </div>
+                      <div class="signal-stat">
+                        <span class="text-sm text-tertiary">Confidence</span>
+                        <span id="signalConfidence" class="text-mono">82%</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="signal-meter">
+                    <div class="meter-label">Quality Score</div>
+                    <div class="meter-bar">
+                      <div
+                        class="meter-fill"
+                        id="qualityMeter"
+                        style="width: 82%"
+                      ></div>
+                    </div>
+                    <div class="meter-value">
+                      <span id="qualityScore">82</span>/100
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- ENTRY & TARGETS -->
+              <div class="card">
+                <div class="card-header">
+                  <h3 class="card-title">Trade Setup</h3>
+                </div>
+                <div class="trade-ladder">
+                  <div class="ladder-item">
+                    <span class="ladder-label">Entry</span>
+                    <div class="ladder-value">
+                      <span id="entryPrice" class="text-mono">42,500</span>
+                      <span class="ladder-badge">Immediate</span>
+                    </div>
+                  </div>
+                  <div class="ladder-divider"></div>
+                  <div class="ladder-item tp">
+                    <span class="ladder-label">TP 1 (1:1)</span>
+                    <div class="ladder-value">
+                      <span id="tp1Price" class="text-mono">43,800</span>
+                      <span class="ladder-distance" id="tp1Distance"
+                        >+1300</span
+                      >
+                    </div>
+                  </div>
+                  <div class="ladder-item tp">
+                    <span class="ladder-label">TP 2 (1:2)</span>
+                    <div class="ladder-value">
+                      <span id="tp2Price" class="text-mono">45,100</span>
+                      <span class="ladder-distance" id="tp2Distance"
+                        >+2600</span
+                      >
+                    </div>
+                  </div>
+                  <div class="ladder-item tp">
+                    <span class="ladder-label">TP 3 (1:3)</span>
+                    <div class="ladder-value">
+                      <span id="tp3Price" class="text-mono">46,400</span>
+                      <span class="ladder-distance" id="tp3Distance"
+                        >+3900</span
+                      >
+                    </div>
+                  </div>
+                  <div class="ladder-divider"></div>
+                  <div class="ladder-item sl">
+                    <span class="ladder-label">Stop Loss</span>
+                    <div class="ladder-value">
+                      <span id="slPrice" class="text-mono">41,200</span>
+                      <span class="ladder-distance danger" id="slDistance"
+                        >-1300</span
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- RISK METRICS -->
+              <div class="stats-grid">
+                <div class="stat-card">
+                  <div class="stat-icon">💰</div>
+                  <div class="stat-content">
+                    <span class="stat-label">Position Size</span>
+                    <span class="stat-number" id="positionSize">0.47 BTC</span>
+                  </div>
+                </div>
+                <div class="stat-card">
+                  <div class="stat-icon">📊</div>
+                  <div class="stat-content">
+                    <span class="stat-label">Risk/Reward</span>
+                    <span class="stat-number green" id="riskReward">3.0:1</span>
+                  </div>
+                </div>
+                <div class="stat-card">
+                  <div class="stat-icon">📈</div>
+                  <div class="stat-content">
+                    <span class="stat-label">Max Risk</span>
+                    <span class="stat-number" id="maxRisk">$200</span>
+                  </div>
+                </div>
+                <div class="stat-card">
+                  <div class="stat-icon">✨</div>
+                  <div class="stat-content">
+                    <span class="stat-label">Confluences</span>
+                    <span class="stat-number" id="confluences">5</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- TECHNICAL BREAKDOWN -->
+              <div class="card">
+                <div class="card-header">
+                  <h3 class="card-title">Technical Indicators</h3>
+                </div>
+                <div class="indicators-grid" id="indicatorsGrid">
+                  <!-- Populated by JavaScript -->
+                </div>
+              </div>
+
+              <!-- ACTION BUTTONS -->
+              <div class="action-buttons">
+                <button class="btn btn-success btn-lg w-full">
+                  <span>✅</span>
+                  Execute Trade
+                </button>
+                <button class="btn btn-secondary btn-lg w-full">
+                  <span>📋</span>
+                  Generate Report
+                </button>
+                <button class="btn btn-secondary btn-lg w-full">
+                  <span>📋</span>
+                  Copy Setup
+                </button>
+              </div>
+            </div>
+
+            <!-- EMPTY STATE -->
+            <div id="emptyState" class="empty-state">
+              <svg
+                width="64"
+                height="64"
+                viewBox="0 0 64 64"
+                fill="none"
+                opacity="0.3"
+              >
+                <path
+                  d="M48 16H16C14.9 16 14 16.9 14 18V46C14 47.1 14.9 48 16 48H48C49.1 48 50 47.1 50 46V18C50 16.9 49.1 16 48 16Z"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  fill="none"
+                />
+                <circle cx="22" cy="24" r="2" fill="currentColor" />
+                <path
+                  d="M14 38L24 28L36 38L50 26"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  fill="none"
+                />
+              </svg>
+              <h3>No Analysis Yet</h3>
+              <p class="text-tertiary">
+                Upload a chart to get AI-powered trading signals
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- TOAST NOTIFICATIONS -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- SCRIPTS -->
+    <script src="js/utils.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/dashboard.js"></script>
+  </body>
+</html>
