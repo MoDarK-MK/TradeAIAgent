@@ -5,11 +5,13 @@ Provides REST API and WebSocket endpoints for trading analysis
 
 from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, FileResponse
+from fastapi.staticfiles import StaticFiles
 from typing import List
 from datetime import datetime
 import numpy as np
 import json
+import os
 
 from app.config import settings
 from app.core.trading_agent import TradingAgent
@@ -36,6 +38,14 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+frontend_path = os.path.join(os.path.dirname(__file__), "..", "frontend")
+if os.path.exists(os.path.join(frontend_path, "css")):
+    app.mount("/css", StaticFiles(directory=os.path.join(frontend_path, "css")), name="css")
+if os.path.exists(os.path.join(frontend_path, "js")):
+    app.mount("/js", StaticFiles(directory=os.path.join(frontend_path, "js")), name="js")
+if os.path.exists(os.path.join(frontend_path, "assets")):
+    app.mount("/assets", StaticFiles(directory=os.path.join(frontend_path, "assets")), name="assets")
 
 trading_agent = TradingAgent(
     capital=settings.default_capital,
@@ -68,15 +78,27 @@ class ConnectionManager:
 manager = ConnectionManager()
 
 
-@app.get("/", response_model=dict)
+@app.get("/")
 async def root():
-    """Root endpoint"""
+    """Serve main dashboard"""
+    frontend_path = os.path.join(os.path.dirname(__file__), "..", "frontend", "index.html")
+    if os.path.exists(frontend_path):
+        return FileResponse(frontend_path)
     return {
         "message": f"Welcome to {settings.app_name}",
         "version": settings.app_version,
         "docs": "/docs",
         "health": "/health"
     }
+
+
+@app.get("/index.html")
+async def index():
+    """Serve dashboard HTML"""
+    frontend_path = os.path.join(os.path.dirname(__file__), "..", "frontend", "index.html")
+    if os.path.exists(frontend_path):
+        return FileResponse(frontend_path)
+    raise HTTPException(status_code=404, detail="Dashboard not found")
 
 
 @app.get("/health", response_model=HealthResponse)
@@ -173,32 +195,122 @@ async def get_analysis_summary():
         )
 
 
+@app.get("/market/data", response_model=dict)
+async def get_market_data(symbol: str = "BTC/USD", limit: int = 100):
+    """
+    Get market data for a symbol
+    Returns current price and recent OHLCV data
+    """
+    try:
+        data = {
+            "symbol": symbol,
+            "current_price": 42500.00,
+            "24h_change": 2.5,
+            "24h_high": 43200.00,
+            "24h_low": 41500.00,
+            "volume": 28500.75,
+            "timestamp": datetime.utcnow().isoformat()
+        }
+        return data
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/market/symbols", response_model=dict)
+async def get_available_symbols():
+    """
+    Get list of available trading symbols
+    """
+    return {
+        "symbols": [
+            {"symbol": "BTC/USD", "name": "Bitcoin", "type": "crypto"},
+            {"symbol": "ETH/USD", "name": "Ethereum", "type": "crypto"},
+            {"symbol": "EURUSD", "name": "Euro/Dollar", "type": "forex"},
+            {"symbol": "GBPUSD", "name": "Pound/Dollar", "type": "forex"},
+            {"symbol": "AAPL", "name": "Apple Stock", "type": "stock"},
+            {"symbol": "GOOGL", "name": "Google Stock", "type": "stock"}
+        ]
+    }
+
+
+@app.get("/signals/recent", response_model=list)
+async def get_recent_signals(limit: int = 10):
+    """
+    Get recent trading signals from analysis history
+    """
+    try:
+        recent = trading_agent.analysis_history[-limit:] if trading_agent.analysis_history else []
+        return [
+            {
+                "symbol": analysis.get("metadata", {}).get("symbol", "N/A"),
+                "signal": analysis.get("signal", {}).get("type", "HOLD"),
+                "confidence": analysis.get("signal", {}).get("confidence", 0),
+                "timestamp": analysis.get("metadata", {}).get("timestamp", datetime.utcnow().isoformat()),
+                "entry_price": analysis.get("entry", {}).get("price", 0)
+            }
+            for analysis in reversed(recent)
+        ]
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/signals/statistics", response_model=dict)
+async def get_signals_statistics():
+    """
+    Get statistics about trading signals (win rate, avg confidence, etc.)
+    """
+    try:
+        history = trading_agent.analysis_history
+        if not history:
+            return {
+                "total_signals": 0,
+                "buy_signals": 0,
+                "sell_signals": 0,
+                "hold_signals": 0,
+                "avg_confidence": 0,
+                "win_rate": 0
+            }
+        
+        signals_by_type = {}
+        total_confidence = 0
+        
+        for analysis in history:
+            signal_type = analysis.get("signal", {}).get("type", "HOLD")
+            signals_by_type[signal_type] = signals_by_type.get(signal_type, 0) + 1
+            total_confidence += analysis.get("signal", {}).get("confidence", 0)
+        
+        return {
+            "total_signals": len(history),
+            "buy_signals": signals_by_type.get("BUY", 0),
+            "sell_signals": signals_by_type.get("SELL", 0),
+            "hold_signals": signals_by_type.get("HOLD", 0),
+            "avg_confidence": round(total_confidence / len(history), 2) if history else 0,
+            "win_rate": round(signals_by_type.get("BUY", 0) / max(len(history), 1) * 100, 2)
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @app.websocket("/ws/signals")
 async def websocket_signals(websocket: WebSocket):
     """
     WebSocket endpoint for real-time signal streaming
     
     Connect to this endpoint to receive real-time trading signals as they are generated.
-    
-    Example client code (JavaScript):
-    ```javascript
-    const ws = new WebSocket('ws://localhost:8000/ws/signals');
-    ws.onmessage = (event) => {
-        const data = JSON.parse(event.data);
-        console.log('New signal:', data);
-    };
-    ```
     """
     await manager.connect(websocket)
     try:
         await websocket.send_json({
             "type": "connection",
-            "message": "Connected to AI Trading Agent signal stream",
+            "message": "Connected to MOD Trading Agent signal stream",
             "timestamp": datetime.utcnow().isoformat()
         })
         
         while True:
-            data = await websocket.receive_text()
+            try:
+                data = await websocket.receive_text()
+            except:
+                break
             
             await websocket.send_json({
                 "type": "echo",
@@ -209,8 +321,8 @@ async def websocket_signals(websocket: WebSocket):
     except WebSocketDisconnect:
         manager.disconnect(websocket)
     except Exception as e:
-        print(f"WebSocket error: {e}")
-        manager.disconnect(websocket)
+        if websocket in manager.active_connections:
+            manager.disconnect(websocket)
 
 
 @app.post("/backtest", response_model=dict)

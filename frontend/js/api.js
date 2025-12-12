@@ -1,4 +1,3 @@
-
 const API_CONFIG = {
   baseUrl: "http://localhost:8000/api",
   timeout: 30000,
@@ -159,6 +158,22 @@ class TradingAPI {
   async healthCheck() {
     return this.api.get("/health");
   }
+
+  async getMarketData(symbol = "BTC/USD", limit = 100) {
+    return this.api.get(`/market/data?symbol=${symbol}&limit=${limit}`);
+  }
+
+  async getAvailableSymbols() {
+    return this.api.get("/market/symbols");
+  }
+
+  async getRecentSignals(limit = 10) {
+    return this.api.get(`/signals/recent?limit=${limit}`);
+  }
+
+  async getSignalsStatistics() {
+    return this.api.get("/signals/statistics");
+  }
 }
 
 class SignalWebSocket {
@@ -215,8 +230,7 @@ class SignalWebSocket {
       console.log(`Reconnecting (attempt ${this.reconnectAttempts})...`);
 
       setTimeout(() => {
-        this.connect().catch(() => {
-        });
+        this.connect().catch(() => {});
       }, this.reconnectDelay);
     } else {
       console.error("Max reconnect attempts reached");
@@ -265,7 +279,6 @@ class SignalWebSocket {
   }
 }
 
-
 const api = new TradingAPI();
 
 let signalWS = null;
@@ -283,7 +296,6 @@ function disconnectWebSocket() {
     signalWS.disconnect();
   }
 }
-
 
 function handleAPIError(error) {
   console.error("API Error:", error);
@@ -325,5 +337,3 @@ async function withErrorHandling(apiCall, options = {}) {
     throw error;
   }
 }
-
-

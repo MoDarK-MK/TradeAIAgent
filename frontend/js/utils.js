@@ -1,4 +1,3 @@
-
 function showToast(message, type = "info", duration = 4000) {
   const container = document.getElementById("toastContainer");
 
@@ -300,4 +299,66 @@ function createElement(tag, attrs = {}, content = "") {
   return element;
 }
 
+function formatNumberWithCommas(value) {
+  return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
 
+function calculatePercentageChange(oldValue, newValue) {
+  if (oldValue === 0) return 0;
+  return ((newValue - oldValue) / oldValue) * 100;
+}
+
+function isValidEmail(email) {
+  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return regex.test(email);
+}
+
+function isValidNumber(value) {
+  return !isNaN(parseFloat(value)) && isFinite(value);
+}
+
+function debounceAsync(fn, delay) {
+  let timeoutId;
+  return async function (...args) {
+    clearTimeout(timeoutId);
+    return new Promise((resolve) => {
+      timeoutId = setTimeout(async () => {
+        resolve(await fn(...args));
+      }, delay);
+    });
+  };
+}
+
+function throttle(fn, limit) {
+  let inThrottle;
+  return function (...args) {
+    if (!inThrottle) {
+      fn.apply(this, args);
+      inThrottle = true;
+      setTimeout(() => {
+        inThrottle = false;
+      }, limit);
+    }
+  };
+}
+
+function getRandomElement(array) {
+  return array[Math.floor(Math.random() * array.length)];
+}
+
+function retryAsync(fn, maxAttempts = 3, delayMs = 1000) {
+  return (async function attempt(n = 0) {
+    try {
+      return await fn();
+    } catch (error) {
+      if (n < maxAttempts) {
+        await new Promise((resolve) =>
+          setTimeout(resolve, delayMs * Math.pow(2, n))
+        );
+        return attempt(n + 1);
+      } else {
+        throw error;
+      }
+    }
+  })();
+}

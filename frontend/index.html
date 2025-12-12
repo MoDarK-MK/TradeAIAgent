@@ -576,8 +576,32 @@
     <div class="toast-container" id="toastContainer"></div>
 
     <!-- SCRIPTS -->
+    <script src="config.js"></script>
     <script src="js/utils.js"></script>
     <script src="js/api.js"></script>
     <script src="js/dashboard.js"></script>
+
+    <!-- API Status Check -->
+    <script>
+      document.addEventListener("DOMContentLoaded", async () => {
+        try {
+          const config =
+            typeof getApiConfig === "function"
+              ? getApiConfig()
+              : { baseUrl: "http://localhost:8000" };
+          const response = await fetch(`${config.baseUrl}/health`);
+          if (response.ok) {
+            console.log("✅ API Server connected");
+          }
+        } catch (error) {
+          console.warn("⚠️ API Server not available - Features may be limited");
+          showToast(
+            "API Server not available. Running in offline mode.",
+            "warning",
+            5000
+          );
+        }
+      });
+    </script>
   </body>
 </html>

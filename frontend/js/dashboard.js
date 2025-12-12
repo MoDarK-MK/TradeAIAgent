@@ -1,4 +1,3 @@
-
 class Dashboard {
   constructor() {
     this.currentAnalysis = null;
@@ -422,6 +421,68 @@ class Dashboard {
   }
 
   setupWebSocket() {
+    initializeWebSocket()
+      .then(() => {
+        console.log("WebSocket initialized");
+
+        if (signalWS) {
+          signalWS.on("signal", (data) => {
+            console.log("New signal received:", data);
+            if (data.type === "new_analysis") {
+              showToast(
+                `New signal: ${data.signal} (${data.confidence}% confidence)`,
+                "info"
+              );
+            }
+          });
+
+          signalWS.on("error", (error) => {
+            console.error("WebSocket error:", error);
+          });
+
+          signalWS.on("disconnected", () => {
+            console.log("WebSocket disconnected");
+          });
+        }
+      })
+      .catch((error) => {
+        console.error("WebSocket connection failed:", error);
+      });
+  }
+
+  async loadRecentSignals() {
+    try {
+      const signals = await api.getRecentSignals(5);
+      console.log("Recent signals loaded:", signals);
+      if (Array.isArray(signals) && signals.length > 0) {
+        const latestSignal = signals[0];
+        if (this.currentAnalysis) {
+          this.displayResults(this.currentAnalysis);
+        }
+      }
+    } catch (error) {
+      console.error("Failed to load recent signals:", error);
+    }
+  }
+
+  async loadSignalStatistics() {
+    try {
+      const stats = await api.getSignalsStatistics();
+      console.log("Signal statistics:", stats);
+    } catch (error) {
+      console.error("Failed to load signal statistics:", error);
+    }
+  }
+
+  async loadAvailableSymbols() {
+    try {
+      const symbolsData = await api.getAvailableSymbols();
+      if (symbolsData && symbolsData.symbols) {
+        console.log("Available symbols loaded:", symbolsData.symbols);
+      }
+    } catch (error) {
+      console.error("Failed to load symbols:", error);
+    }
   }
 
   search() {
@@ -448,12 +509,17 @@ class Dashboard {
   }
 }
 
-
 let dashboard;
 
 document.addEventListener("DOMContentLoaded", () => {
   dashboard = new Dashboard();
   console.log("Dashboard initialized");
+
+  setTimeout(() => {
+    dashboard.loadRecentSignals();
+    dashboard.loadSignalStatistics();
+    dashboard.loadAvailableSymbols();
+  }, 500);
 });
 
 window.addEventListener("beforeunload", () => {
